@@ -30,6 +30,16 @@ namespace FoxyOwl.UserControls
             DataSource.Add(new Candlestick("2021.09.09	09:06:00	6687.635	6688.628	6685.341	6685.887".Split('\t')));
             DataSource.Add(new Candlestick("2021.09.09	09:09:00	6685.941	6688.370	6685.865	6687.876".Split('\t')));
             DataSource.Add(new Candlestick("2021.09.09	09:12:00	6688.018	6688.464	6685.748	6685.853".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:15:00	6686.052	6688.263	6686.013	6687.713".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:18:00	6687.666	6688.087	6686.812	6687.579".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:21:00	6687.941	6688.362	6685.380	6685.679".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:24:00	6685.817	6687.896	6685.817	6687.896".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:27:00	6688.247	6692.953	6688.229	6692.844".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:30:00	6692.810	6694.348	6691.264	6694.146".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:33:00	6694.280	6694.898	6693.540	6693.714".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:36:00	6693.943	6696.408	6693.585	6696.395".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:39:00	6696.400	6697.224	6695.534	6695.907".Split('\t')));
+            DataSource.Add(new Candlestick("2021.09.09	09:42:00	6696.025	6697.714	6694.475	6697.407".Split('\t')));
             #endregion
         }
 
@@ -54,21 +64,20 @@ namespace FoxyOwl.UserControls
                 var candlesMaxHeight = candlesticks.Max(x => x.High);
                 var candlesMinHeight = candlesticks.Min(x => x.Low);
 
-                var maxPoints = Math.Floor((candlesMaxHeight - candlesMinHeight) * 1_000);
+                var points = 1_000;
+
+                var maxPoints = Math.Floor((candlesMaxHeight - candlesMinHeight) * points);
 
                 for (int i = 1; i < candlesticks.Count; i++)
                 {
                     X += 50;
 
-                    var bodyHeightPercentage = candlesticks[i].CandleGraphics.BodyHeight / maxPoints * 100;
-                    var wickHeightPercentage = candlesticks[i].CandleGraphics.WickHeight / maxPoints * 100;
-
-                    var bodyHeight = (int)Math.Floor(bodyHeightPercentage / 100 * mainPanel.Height);
-                    var wickHeight = (int)Math.Floor(wickHeightPercentage / 100 * mainPanel.Height);
+                    var bodyHeight = candlesticks[i].GetRelativeValue(candlesticks[i].CandleGraphics.BodyHeight, maxPoints, mainPanel.Height);
+                    var wickHeight = candlesticks[i].GetRelativeValue(candlesticks[i].CandleGraphics.WickHeight, maxPoints, mainPanel.Height);
 
                     //TODO: add body & wick Offset.
-                    var bodyOffset = (int)Math.Floor(candlesMaxHeight - Math.Max(candlesticks[i].Open, candlesticks[i].Close));
-                    var wickOffset = (int)Math.Floor(candlesMaxHeight - candlesticks[i].High);
+                    var bodyOffset = candlesticks[i].GetRelativeValue((int)Math.Floor((candlesMaxHeight - Math.Max(candlesticks[i].Open, candlesticks[i].Close)) * points), maxPoints, mainPanel.Height);
+                    var wickOffset = candlesticks[i].GetRelativeValue((int)Math.Floor((candlesMaxHeight - candlesticks[i].High) * points), maxPoints, mainPanel.Height);
 
                     var candleGraphics = mainPanel.CreateGraphics();
 
@@ -76,8 +85,8 @@ namespace FoxyOwl.UserControls
 
                     candlesticks[i].SetCandleDimensions();
 
-                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X, Y, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
-                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X+10, Y, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
+                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X, Y + bodyOffset, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
+                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X+10, Y + wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
                 }
             }
             catch (Exception)

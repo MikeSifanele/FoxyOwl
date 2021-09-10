@@ -107,5 +107,18 @@ namespace FoxyOwl.Models
                 WickHeight = (int)((High - Low) * point)
             };
         }
+        public int GetRelativeValue(int value, double maxPoints, int panelHeight)
+        {
+            try
+            {
+                var valuePercentage = value / maxPoints * 100;
+
+                return (int)Math.Floor(valuePercentage / 100 * panelHeight);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
     }
 }
