@@ -67,10 +67,11 @@ namespace FoxyOwl.UserControls
                 var points = 1_000;
 
                 var maxPoints = Math.Floor((candlesMaxHeight - candlesMinHeight) * points);
+                var candlePadding = candlesticks[0].CandleGraphics.WickWidth;
 
                 for (int i = 1; i < candlesticks.Count; i++)
                 {
-                    X += 50;
+                    X +=  candlesticks[i].CandleGraphics.BodyWidth + candlePadding;
 
                     var bodyHeight = candlesticks[i].GetRelativeValue(candlesticks[i].CandleGraphics.BodyHeight, maxPoints, mainPanel.Height);
                     var wickHeight = candlesticks[i].GetRelativeValue(candlesticks[i].CandleGraphics.WickHeight, maxPoints, mainPanel.Height);
@@ -86,7 +87,7 @@ namespace FoxyOwl.UserControls
                     candlesticks[i].SetCandleDimensions();
 
                     candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X, Y + bodyOffset, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
-                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X+10, Y + wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
+                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(X + candlePadding, Y + wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
                 }
             }
             catch (Exception)

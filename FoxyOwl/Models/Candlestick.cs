@@ -97,12 +97,12 @@ namespace FoxyOwl.Models
                 return Close;
             }
         }
-        public void SetCandleDimensions(int bodyWidth = 30, int wickWidth = 10, int point = 1_000)
+        public void SetCandleDimensions(int bodyWidth = 9, int point = 1_000)
         {
             CandleGraphics = new CandleGraphics
             {
                 BodyWidth = bodyWidth,
-                WickWidth = wickWidth,
+                WickWidth = bodyWidth/3,
                 BodyHeight = (int)((Open > Close ? Open - Close : Close - Open) * point),
                 WickHeight = (int)((High - Low) * point)
             };
