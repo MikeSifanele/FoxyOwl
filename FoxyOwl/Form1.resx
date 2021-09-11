@@ -117,4 +117,77 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAHiAAAAEAIACoDwAAFgAAACgAAAAeAAAAQAAAAAEAIAAAAAAAAA8AAHQSAAB0EgAAAAAAAAAA
+        AADAp6L/wNXe/7DU5v/A2OX/tdjk/4PI3v+bwNb/cYih/1Zthf9JaX7/SGJ8/1Rxj/9icYD/SUhR/x0i
+        K/8SFx7/FSE5/ys3Uv81RmH/M0Ri/zpWdv9FkrX/e7XL/4ekuv/T2Of/1djt/+bo8v/Ky+L/wMDa/4CU
+        zP/BwMD/ttLY/7HV4f+lzN7/q8fU/4iuwf+Epbn/c4ie/2Rzh/9OZnz/SGeG/09zlf9JW2//JC05/xQc
+        J/8RExn/Fh8v/yUvQP9DUWL/OVFq/zpliv9yrML/orOu/7e6vf/e3eP/6Oft/+Xm7//HzN//wMbb/4qt
+        xf+Kvrz/os3N/7nZ3/+v1OX/gLbM/2qNpP9Ya4H/V2l+/3eFlv+JlaD/RmJ5/ztffP8xR1//HSYz/xAZ
+        Kf8PEh7/Fhwp/yAwRP8nP1L/LUZd/z9jgv9ScXr/ZIma/4Ckwf9+oeD/1dnn/+bl5//X2eD/uMXZ/6C0
+        xP92trb/ws7R/9ne4v+6ytf/eKnB/2KLoP9QYnT/SmBo/zA6O/9OWV7/bnqG/yg6S/8mNUb/HCU0/xAX
+        Jf8QFSD/FBoo/yMvQv8oMz//Okpd/zlNYv8bKjD/GjRB/zFLbv9Tb6z/uLfD/87K0f/GxtD/nb3P/4ul
+        tv+sy87/yMvR/9DY3/+/w8n/i5Wj/1VkdP82Tlv/KEJF/xIWFP8JDA3/PkZO/2Nqdf8jKjX/FR4q/xIX
+        I/8RFR//Ehgk/xkjMv8lMTz/O0xf/yczP/8LDA7/DAsM/xESFv8sLi//YmJq/7emrf/Bsrr/pcHO/6e6
+        xf96oaD/kJSg/4yWpP9bYWj/Mjg+/xwjKv8LFBf/CA0O/wYICf8KDA7/Jisv/2xoZv9MSk3/Ji04/y00
+        QP8uNEH/KC08/ysyQv8qNj7/JzdF/xQZIf8LDA3/DA0P/wwNDv8ODhH/HBwg/1dQUP+0p6T/kbW1/3WY
+        nv9FXGb/TFhq/0dSZ/85QU3/DRAS/wYICf8FBwj/BggJ/wYICf8MDxH/LDI3/3p1dP+xqab/xsbK/8bI
+        zP+9v8X/uLi//76/xv+pq6r/aHJ0/0RISf8kIyL/ExQX/xETFf8PEBL/EBAS/x0dHf88PDz/YnFw/42X
+        n/8YHyP/Iygv/yAlLP8VGBz/CgwO/wUHCP8HCQr/DxET/zc4Ov9RUlT/jpCS/93d3v/x8fP/8O/y/7u6
+        v/+WlZv/paOo/9za3f/q6ev/4+Tl/9HPzf+Bfnz/TEpK/xUVF/8RERP/ERIT/xAQEf8WFhn/QEFH/7e0
+        vP8JCgz/BwcG/wQFBf8EBgb/AwUF/wQFBv8EBgf/NTc4/8C+vv/l5OT/8/T0//T19f/n5+j/trS1/4KA
+        gv90cnP/g4CC/6emqP/d3d7/6+zu/+nn6v/f2tz/op+h/05NTv8WFxj/EhMV/xQWGP8YGBv/Jygs/5GN
+        k/8YGR3/Dw4O/wgICP8JCgn/Dw8O/w8QEP8QEhL/Tk9P/+Xn5v/x9PT/8vX1//b4+P/V1tb/np+f/3Z1
+        dP9JRkj/ko+R/7m5uv/Hx8j/7O3u/+3u8P/l5eb/4d7h/727vf9VU1X/Ghsc/xMUFf8RERL/Dw8Q/yAe
+        If8aGRv/FRQU/xAODv8XFRT/Hx0a/ysoJ/9FQ0H/bGln/7+/vv/y9fX/8/j3//X5+f/i5OT/bWxt/yoo
+        KP8YFxf/PDs7/3x5eP/j4+L/7/Dx/+3u7//u8PH/6Ojq/7u2tf9xbGz/Ly0t/xkaG/8UExT/ERAR/xEQ
+        Ef9KOTX/JiIh/x0bG/8hHx7/Kigl/0E8Of9dWFX/fnp4/4+LiP/Av73/6+3t//f6+v+wsLD/XFxc/z08
+        PP8nJCT/QkFB/zYzM//CwcD/8/X1/+zs7f/p6On/v7y8/4B6d/9jXVv/S0hJ/yorK/8gHh3/IyAg/y4q
+        Kf+Dhor/XlRR/z85Nv86NTP/Pjo3/zo2NP89OTb/W1VS/1lWU/8yMTD/g4SD//D08/+oqaj/TExM/z8+
+        Pv8mIyP/IR8f/zEwMP/Ew8H/7e7t/7y8vf+HhYX/d3Jw/1JNS/9NSUj/RkNC/zMyMf8yLy7/Liop/zMv
+        Lv9jlqz/ZXmE/zw2Nf9BOzn/PDg2/yUkI/8cGhr/FhUV/w4ODv8ODg7/ICAg/7Gyrf/Q09D/XVxT/y8r
+        Jf9GQ0P/ZVpe/6aho//g397/ubes/z09PP8VFRb/JyUl/yooKP8rKSn/LCsr/ywrK/8vLi7/KSco/yUj
+        JP+PmKL/d6zC/0BFSf8KCQn/CgoK/w8PD/8VFRX/FRUW/xQUFP8YGRn/FxkZ/2FmYv+hz9n/fp6d/ztF
+        Qf9bVV//on6V/9nR1P/V0sL/XFtM/xUZHP8TFBX/ExMT/xUVFf8WFhf/Hx8h/yYnKP8nKSr/JCMk/yMh
+        JP99eoH/qrjD/66zuf8/QUf/DxAR/xEREf8UFBT/GBgY/xYWFv8gISH/HR8g/01UV/+Bs8D/MmJ0/x0v
+        NP8jLUD/alx1/9DLzP+joZD/MTY4/xUYGv8bHyP/Gh4j/xkdIf8XGh3/FhcZ/xoeIP8cHyP/HBsd/yQj
+        J/9bWGP/p7C9/8ja7P+jqsD/eXuK/2VncP8rKyv/EhIS/0lJSP95d3f/ZGJa/11hXP+YsLf/Pl5w/yg4
+        QP8mMkT/eYCM/83NyP9namT/Iygv/zc8QP9iYmT/REVI/x4jKf8eJS3/HCEm/xocH/8dHiP/Kiov/0NE
+        Tf88Nj7/bG55/6W90v/H2fH/2d71/8/Y9P93fo3/JSQk/318ev8vLi7/Kyge/0RBMv+eq6//TGJz/0NR
+        Xf9CT17/j5qh/7/BvP9HTlH/MDc9/zAyNP80MjH/ZF9h/0JAR/8cISb/Ghwf/x0dH/8hIST/U1Ja/6Gc
+        qf9EMjn/Ky03/4iXpP+h0Ob/qdLu/7rT8f9pd5D/LS0w/1taWv9jYmH/ODc2/yknJP+stbn/Vmx9/ztL
+        Wv9UYnH/uMHF/6uysP82P0T/Oj4//15eX/8bGxr/LSov/zczPf8/S1//Zmp4/359g/+VkZb/mZSc/8XB
+        zP94UEz/Uk9S/05ZY/96pbb/nMnf/7DU7f+gqLf/LzE7/xYXGf8sLS3/HR0d/zg6PP+nucL/aHyN/0FS
+        Y/9pfpD/1djY/6y0tP85Qkf/KCww/zs8Qf8kJyr/ISYu/yguN/+Ahpb/0tPi/9TS2/+cmqf/Z2hz/19m
+        df+nbFD/mo+F/zs6PP8iJin/YXV+/6u+zf/V19z/q6+3/1VbYv8gJiv/HyMl/0JJUv+mvsj/dI6g/09h
+        cv+GlaL/yM3Q/8rS0v9UW17/HR4f/x4gIv9KSk7/bW1y/4qNlP/Q0Nj/09fn/4qWrP9YX23/R1Bf/0pU
+        Zf+ciHv/kJmX/4uIhf9cWFv/iIWH/46Nkf/BwsX/1dfb/7K1uf+UnKP/dn6G/3uBif+5ztb/bZmx/1t0
+        hv+ntLv/w8nM/8/Z2f99gH7/Hh0e/1VTVv++u77/5eLk/+fj5f/Y3eT/qrrL/2p4j/9JUmH/Qk5j/15s
+        hP+aoJn/j6m8/62/3f/O0Nv/urbA/0tHTf+FhYz/tLK3/7Kkov+AhYr/jI6U/5ean/+4vsX/aYib/32P
+        m/+1ur//ztDR/9Tb2/+5vLz/RD9C/3txef/b0tT/497f/+jj5P+bp7D/VWt9/1Nca/9JUV//XWV3/6+y
+        wP+9nVH/nbG+/6fB7/+0wNP/V2Jx/yUjJ/84Nz//QUFG/2NhZf8uN0L/OENP/15vff+iqK//anR6/5qi
+        pP9xcHD/eXh4/8rLzP/JzdD/hIOJ/1BYav+OjJL/t7Gs/6Gln/+MkIT/S0tN/11hZv+SlqH/srK9/9zZ
+        3/+0m0z/p66o/67A2/9dcIL/Ghse/xwYGf9RTU//Pz5C/x4fJP9JXmj/Mk1c/zpddv+PnKb/Xl5f/42S
+        lP9BS1D/FRgZ/21sa/+mo6L/ko+O/29+h/87WWj/XoKQ/1KWsP9HlK7/T2h0/11lb/+ut8b/zdPg/83m
+        7v+IiXj/fo6j/2p9lv8pKzH/EA4O/zAtLf/Lxcf/paGl/0JGTP9cZ3T/MWOB/zpqiv+Cm6z/am5y/1hb
+        X/8uTVr/FiQp/zY4OP9fXl7/Y2Fh/3F2e/9SfJP/YZ66/4y2y/9Qjan/SW18/zo+Qv94gY//sr/V/63S
+        6P+VkHr/coOb/0FIV/8ZFhf/ExAS/0xHSv/Z0tX/29bZ/6ujrv+dlKH/YXuO/0drhf95kaT/b3iB/3Jx
+        c/82TVT/K1tk/0NgZv+Jhoj/ioiL/3N0ef+wwsz/icje/2ynxP9te4f/Oj1A/yMlJv89Q0n/kZ2z/7jM
+        3v+zqqD/gI6i/zIzPP8YFhr/ODpI/7Cqtv/o5Oj/wsvf/451k/+Ddo3/foyT/2p4hf9wfYz/h4iN/4SH
+        jv9fbXn/X3R9/3uHjf93eH//XmVx/1Bba/+en6P/xNff/4LF4v9bj6n/TFZh/ywvMP8rLi//cHV//8LH
+        2v+pqsH/lZqq/zU7Sv9CSVv/k5iq/9nV3v+3tNr/fn66/5huiP9+e43/bZWZ/5uekv+Sion/l4qC/4CD
+        iv+QkJj/foKK/4F+hP+CdoP/R0lh/09QX/+HcmP/tqik/87X4/+qzN7/Zome/0BMU/8rLjD/c3qH/9LV
+        4v+mqLv/x8LN/6etvv+3uMT/x7vG/8iuv/+zirr/q22b/7yFlP+7pJn/qaub/8Splv+0h23/r4Nk/4lz
+        bP9yX2r/cl9s/3FSgf98Vpn/cEuF/5dycP+2iXL/ppWj/6qwtv/a3NT/vtfl/3OSpv9PWmT/eYmb/83Y
+        1v/RvZb/3sK8/926yP/Urr7/1q66/8OWq/+beLP/m323/86ooP/Vup7/yq+s/66AgP+reGD/p3VR/15E
+        Rf9DK0T/aT94/4BOpP+IXqr/k2N5/7OBbv+3j4//sbS4/7G3hv/T2K3/6fPv/8/i5v+ksbr/lKSz/6LU
+        sf/Wvb7/zLXD/5yX0P/Gprf/06et/5mEq/87ZOn/MmLt/7aup//Vvqr/soy7/5llev+QX2H/flRQ/0Yw
+        RP9QMGL/mHa+/6KBwv+hd5n/oYCM/6WHjf+trJj/ocWT/5rGbv+05KL/3fXk/7Lp1f+Y27H/nNmu/4La
+        kv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAA==
+</value>
+  </data>
 </root>
