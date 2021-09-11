@@ -55,7 +55,7 @@ namespace FoxyOwl
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.531013F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90.46899F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 66F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1172, 728);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1536, 810);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -65,12 +65,12 @@ namespace FoxyOwl
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 382F));
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 664);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 746);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1166, 61);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1530, 61);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // tableLayoutPanel3
@@ -79,7 +79,7 @@ namespace FoxyOwl
             this.tableLayoutPanel3.ColumnCount = 3;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.84021F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.15979F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 390F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 391F));
             this.tableLayoutPanel3.Controls.Add(this.label1, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
@@ -87,7 +87,7 @@ namespace FoxyOwl
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(1166, 57);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(1530, 64);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // label1
@@ -95,25 +95,26 @@ namespace FoxyOwl
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.label1.Font = new System.Drawing.Font("Segoe Print", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(382, 17);
+            this.label1.Location = new System.Drawing.Point(559, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(390, 40);
+            this.label1.Size = new System.Drawing.Size(576, 40);
             this.label1.TabIndex = 0;
             this.label1.Text = "Foxy Owl";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // candleChart1
             // 
-            this.candleChart1.Location = new System.Drawing.Point(3, 66);
+            this.candleChart1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.candleChart1.Location = new System.Drawing.Point(3, 73);
             this.candleChart1.Name = "candleChart1";
-            this.candleChart1.Size = new System.Drawing.Size(1157, 592);
+            this.candleChart1.Size = new System.Drawing.Size(1530, 667);
             this.candleChart1.TabIndex = 2;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1172, 728);
+            this.ClientSize = new System.Drawing.Size(1536, 810);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "Form1";

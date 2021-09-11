@@ -54,6 +54,8 @@ namespace FoxyOwl.UserControls
             {
                 Y = X = 0;
 
+                mainPanel.CreateGraphics().Clear(mainPanel.BackColor);
+
                 if (candlesticks.Any())
                 {
                     candlesticks[0].FastEMA = candlesticks[0].SlowEMA = candlesticks[0].Close;

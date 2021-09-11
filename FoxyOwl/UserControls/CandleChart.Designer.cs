@@ -34,6 +34,7 @@ namespace FoxyOwl.UserControls
             // 
             // mainPanel
             // 
+            this.mainPanel.BackColor = System.Drawing.Color.Black;
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
