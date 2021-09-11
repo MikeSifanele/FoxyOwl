@@ -11,7 +11,6 @@ namespace FoxyOwl
     public class MqlHelper
     {
         #region Static Properties
-
         static MqlHelper _instance;
         public static MqlHelper Instance
         {

@@ -16,5 +16,25 @@ namespace FoxyOwl
         {
             InitializeComponent();
         }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnForward_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnBuy_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSell_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
