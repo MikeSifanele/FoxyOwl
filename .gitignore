@@ -6,3 +6,7 @@ FoxyOwl/obj/
 FoxyOwl.sln
 
 .vs/FoxyOwl/v17/
+
+packages/
+
+.vs/FoxyOwl/v16/

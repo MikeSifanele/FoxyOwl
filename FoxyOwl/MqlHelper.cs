@@ -1,10 +1,14 @@
-﻿using MtApi5;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using System.IO;
+using System.Diagnostics;
+using Newtonsoft.Json;
+using Python.Runtime;
+using FoxyOwl.Models;
 
 namespace FoxyOwl
 {
@@ -22,77 +26,150 @@ namespace FoxyOwl
                 return _instance;
             }
         }
-
         #endregion
-        private readonly MtApi5Client _mtapi = new MtApi5Client();
+        public string Symbol = "Volatility 10 Index";
         public MqlHelper()
         {
-            _mtapi.BeginConnect(8228);
-
-            while (_mtapi.ConnectionState != Mt5ConnectionState.Connected) { }
+            Runtime.PythonDLL = @"C:\Python\36\python36.dll";
         }
-        public async Task<MqlRates[]> GetMqlRates(string symbol, ENUM_TIMEFRAMES period, int index, int count = 1)
+        public List<MqlRates> GetMqlRates(string symbol, int period = 1, int index = 1, int count = 200_000)
         {
-            MqlRates[] mqlRates = null;
-
-            try
+            using (Py.GIL())
             {
-                _ = await Execute(() => _mtapi.CopyRates(symbol, period, index, count, out mqlRates));
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return mqlRates;
-        }
-        public async Task<MqlRates[]> GetMqlRates(string symbol, ENUM_TIMEFRAMES period, DateTime start, DateTime end)
-        {
-            MqlRates[] mqlRates = null;
-
-            try
-            {
-                _ = await Execute(() => _mtapi.CopyRates(symbol, period, start, end, out mqlRates));
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return mqlRates;
-        }
-        public async Task<MqlTradeResult> Buy(string symbol, double volume)
-        {
-            MqlTradeResult tradeResult = null;
-            _ = await Execute(() => _mtapi.Buy(out tradeResult, volume, symbol));
-            return tradeResult;
-        }
-        public async Task<MqlTradeResult> Sell(string symbol, double volume)
-        {
-            MqlTradeResult tradeResult = null;
-            _ = await Execute(() => _mtapi.Sell(out tradeResult, volume, symbol));
-            return tradeResult;
-        }
-        private async Task<TResult> Execute<TResult>(Func<TResult> func)
-        {
-            return await Task.Factory.StartNew(() =>
-            {
-                var result = default(TResult);
                 try
                 {
-                    result = func();
-                }
-                catch (ExecutionException ex)
-                {
-                    Debug.WriteLine($"Exception: {ex.ErrorCode} - {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Exception: {ex.Message}");
-                }
+                    dynamic mt5 = Py.Import("MetaTrader5");
 
-                return result;
-            });
+                    _ = mt5.initialize();
+
+                    dynamic rates = mt5.copy_rates_from_pos(symbol, period, index, count);
+
+                    var results = new List<MqlRates>();
+
+                    for (int i = 0; i < PyConvert.ToInt(rates.size); i++)
+                    {
+                        results.Add(PyConvert.ToMqlRates(rates[i]));
+                    }
+
+                    return results;
+                }
+                catch (Exception)
+                {
+                    return new List<MqlRates>();
+                }
+            }
+        }
+        public List<MqlRates> GetMqlRates(string symbol, int period, DateTime dateFrom, DateTime dateTo)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    dynamic rates = mt5.copy_rates_range(symbol, period, dateFrom, dateTo);
+
+                    var results = new List<MqlRates>();
+
+                    for (int i = 0; i < PyConvert.ToInt(rates.size); i++)
+                    {
+                        results.Add(PyConvert.ToMqlRates(rates[i]));
+                    }
+
+                    return results;
+                }
+                catch (Exception)
+                {
+                    return new List<MqlRates>();
+                }
+            }
+        }
+        public List<MqlRates> GetMqlRates(string symbol, int period, DateTime dateFrom, int count)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    dynamic rates = mt5.copy_rates_range(symbol, period, dateFrom, count);
+
+                    var results = new List<MqlRates>();
+
+                    for (int i = 0; i < PyConvert.ToInt(rates.size); i++)
+                    {
+                        results.Add(PyConvert.ToMqlRates(rates[i]));
+                    }
+
+                    return results;
+                }
+                catch (Exception)
+                {
+                    return new List<MqlRates>();
+                }
+            }
+        }
+        public bool OpenBuyOrder(string symbol, double volume, string comment = "")
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    _ = mt5.Buy(symbol, volume, comment: comment);
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+        public bool OpenSellOrder(string symbol, double volume, string comment = "")
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    _ = mt5.Sell(symbol, volume, comment: comment);
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+        public bool PositionCloseAll(string symbol)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    return PyConvert.ToBool(mt5.Close(symbol));
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
         }
     }
 }

@@ -37,9 +37,10 @@ namespace FoxyOwl
             this.btnBuy = new System.Windows.Forms.Button();
             this.btnForward = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
+            this.btnDownload = new System.Windows.Forms.Button();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.candleChart1 = new FoxyOwl.UserControls.CandleChart();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.candleChart1 = new FoxyOwl.UserControls.CandleChart();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -73,6 +74,7 @@ namespace FoxyOwl
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel4, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnDownload, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 746);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -161,6 +163,21 @@ namespace FoxyOwl
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
+            // btnDownload
+            // 
+            this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownload.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDownload.Location = new System.Drawing.Point(520, 10);
+            this.btnDownload.Margin = new System.Windows.Forms.Padding(10);
+            this.btnDownload.Name = "btnDownload";
+            this.btnDownload.Size = new System.Drawing.Size(490, 41);
+            this.btnDownload.TabIndex = 1;
+            this.btnDownload.Text = "Download";
+            this.btnDownload.UseVisualStyleBackColor = true;
+            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
+            // 
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.BackColor = System.Drawing.Color.White;
@@ -177,14 +194,6 @@ namespace FoxyOwl
             this.tableLayoutPanel3.Size = new System.Drawing.Size(1530, 64);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
-            // candleChart1
-            // 
-            this.candleChart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.candleChart1.Location = new System.Drawing.Point(3, 73);
-            this.candleChart1.Name = "candleChart1";
-            this.candleChart1.Size = new System.Drawing.Size(1530, 667);
-            this.candleChart1.TabIndex = 2;
-            // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
@@ -197,6 +206,14 @@ namespace FoxyOwl
             this.lblTitle.Text = "Trash Panda";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
+            // candleChart1
+            // 
+            this.candleChart1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.candleChart1.Location = new System.Drawing.Point(3, 73);
+            this.candleChart1.Name = "candleChart1";
+            this.candleChart1.Size = new System.Drawing.Size(1530, 667);
+            this.candleChart1.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -205,6 +222,7 @@ namespace FoxyOwl
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Trash Panda Home";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -228,6 +246,7 @@ namespace FoxyOwl
         private System.Windows.Forms.Button btnForward;
         private System.Windows.Forms.Button btnBack;
         private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Button btnDownload;
     }
 }
 
