@@ -59,7 +59,7 @@ namespace FoxyOwl.UserControls
 
                     var candleGraphics = mainPanel.CreateGraphics();
 
-                    candlesticks[i].SetCandleColour();
+                    candlesticks[i].SetCandleColour(0);
 
                     candlesticks[i].SetCandleDimensions();
 

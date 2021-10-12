@@ -59,7 +59,8 @@ namespace FoxyOwl.Models
                     High = PyConvert.ToFloat(value[2]),
                     Low = PyConvert.ToFloat(value[3]),
                     Close = PyConvert.ToFloat(value[4]),
-                    Macd = 0
+                    Macd = 0,
+                    CandleGraphics = new CandleGraphics()
                 };
             }
             catch (Exception)

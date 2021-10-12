@@ -33,11 +33,11 @@ namespace FoxyOwl.Models
 
         public Brush Colour;
         public CandleGraphics CandleGraphics;
-        public void SetCandleColour()
+        public void SetCandleColour(float macdColour)
         {
             try
             {
-                switch (Macd)
+                switch (macdColour)
                 {
                     case (float)MacdColour.LimeGreen:
                         Colour = new SolidBrush(Color.LimeGreen);

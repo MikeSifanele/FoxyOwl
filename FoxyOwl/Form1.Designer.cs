@@ -40,7 +40,7 @@ namespace FoxyOwl
             this.btnDownload = new System.Windows.Forms.Button();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.candleChart1 = new FoxyOwl.UserControls.CandleChart();
+            this.mainPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -56,7 +56,7 @@ namespace FoxyOwl
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 134F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.candleChart1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.mainPanel, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -206,13 +206,16 @@ namespace FoxyOwl
             this.lblTitle.Text = "Trash Panda";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // candleChart1
+            // mainPanel
             // 
-            this.candleChart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.candleChart1.Location = new System.Drawing.Point(3, 73);
-            this.candleChart1.Name = "candleChart1";
-            this.candleChart1.Size = new System.Drawing.Size(1530, 667);
-            this.candleChart1.TabIndex = 2;
+            this.mainPanel.BackColor = System.Drawing.Color.Black;
+            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainPanel.Location = new System.Drawing.Point(3, 73);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Padding = new System.Windows.Forms.Padding(3);
+            this.mainPanel.Size = new System.Drawing.Size(1530, 667);
+            this.mainPanel.TabIndex = 2;
+            this.mainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
             // 
             // Form1
             // 
@@ -239,7 +242,6 @@ namespace FoxyOwl
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private UserControls.CandleChart candleChart1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Button btnSell;
         private System.Windows.Forms.Button btnBuy;
@@ -247,6 +249,7 @@ namespace FoxyOwl
         private System.Windows.Forms.Button btnBack;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Button btnDownload;
+        private System.Windows.Forms.Panel mainPanel;
     }
 }
 

@@ -29,13 +29,11 @@ namespace FoxyOwl
         }
         #endregion
         public string Symbol = "";
-        public List<MacdRates> MacdRates = null;
         public MqlHelper(string symbol = "Volatility 10 Index")
         {
             Runtime.PythonDLL = @"C:\Python\36\python36.dll";
 
             Symbol = symbol;
-            MacdRates = GetMacdRates(symbol, period: (int)Resolution.M3);
         }
         public List<MqlRates> GetMqlRates(string symbol, int period = 1, int index = 1, int count = 200_000)
         {
@@ -92,6 +90,7 @@ namespace FoxyOwl
                         slowEma = Macd.CalculateEMA(results[i].Close, slowEma, (int)EmaPeriod.Slow);
 
                         results[i].Macd = Macd.CalculateMacd(fastEma, slowEma);
+                        results[i].SetCandleColour(Macd.CalculateCandleColour(prevMacd: results[i-1].Macd, currMacd: results[i].Macd));
                     }
 
                     return results;
