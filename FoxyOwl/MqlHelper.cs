@@ -35,6 +35,69 @@ namespace FoxyOwl
 
             Symbol = symbol;
         }
+        public int GetPoints(string symbol)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    return int.Parse("1".PadRight(PyConvert.ToInt(mt5.symbol_info(symbol).digits) + 1, '0'));
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+            }
+        }
+        public int GetDigits(string symbol)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    return PyConvert.ToInt(mt5.symbol_info(symbol).digits);
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+            }
+        }
+        public TradePosition[] GetOpenPositions(string symbol)
+        {
+            try
+            {
+                using (Py.GIL())
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    TradePosition[] openPositions = new TradePosition[PyConvert.ToInt(mt5.positions_total())];
+
+                    dynamic positions = mt5.positions_get(symbol: symbol);
+
+                    for (int i = 0; i < openPositions.Length; i++)
+                    {
+                        openPositions[i] = PyConvert.ToTradePosition(positions[i]);
+                    }
+
+                    return openPositions;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
         public List<MqlRates> GetMqlRates(string symbol, int period = 1, int index = 1, int count = 200_000)
         {
             using (Py.GIL())
@@ -90,7 +153,7 @@ namespace FoxyOwl
                         slowEma = Macd.CalculateEMA(results[i].Close, slowEma, (int)EmaPeriod.Slow);
 
                         results[i].Macd = Macd.CalculateMacd(fastEma, slowEma);
-                        results[i].SetCandleColour(Macd.CalculateCandleColour(prevMacd: results[i-1].Macd, currMacd: results[i].Macd));
+                        results[i].SetCandleColour(Macd.CalculateCandleColour(prevMacd: results[i - 1].Macd, currMacd: results[i].Macd));
                     }
 
                     return results;

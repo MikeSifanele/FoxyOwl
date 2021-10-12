@@ -61,14 +61,14 @@ namespace FoxyOwl.Models
                 Colour = new SolidBrush(Color.DimGray);
             }
         }
-        public void SetCandleDimensions(int bodyWidth = 6, int point = 1_000)
+        public void SetCandleDimensions(int bodyWidth = 3, float points = 1_000)
         {
             CandleGraphics = new CandleGraphics
             {
                 BodyWidth = bodyWidth,
                 WickWidth = bodyWidth / 3,
-                BodyHeight = (int)((Open > Close ? Open - Close : Close - Open) * point),
-                WickHeight = (int)((High - Low) * point)
+                BodyHeight = (int)((Open > Close ? Open - Close : Close - Open) * points),
+                WickHeight = (int)((High - Low) * points)
             };
         }
         public int GetRelativeValue(int value, double maxPoints, int panelHeight)
@@ -84,5 +84,24 @@ namespace FoxyOwl.Models
                 return 0;
             }
         }
+    }
+    //ticket time  type magic  identifier reason  volume price_open       sl tp  price_current swap  profit symbol comment
+    public class TradePosition
+    {
+        public int Ticket;
+        public DateTime Time;
+        public int Type;
+        public int Magic;
+        public int Identifier;
+        public int Reason;
+        public float Volume;
+        public float PriceOpen;
+        public float StopLoss;
+        public float TakeProfit;
+        public float PriceCurrent;
+        public float Swap;
+        public float Profit;
+        public string Symbol;
+        public string Comment;
     }
 }

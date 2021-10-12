@@ -68,5 +68,44 @@ namespace FoxyOwl.Models
                 return null;
             }
         }
+        public static TradePosition ToTradePosition(dynamic value)
+        {
+            try
+            {
+                return new TradePosition()
+                {
+                    Ticket = PyConvert.ToInt(value.ticket),
+                    Time = PyConvert.ToDateTime(value.time),
+                    Profit = PyConvert.ToFloat(value.profit),
+                    Symbol = (string)value.symbol,
+                    Comment = (string)value.comment,
+                    Volume = PyConvert.ToFloat(value.volume),
+                    PriceCurrent = PyConvert.ToFloat(value.price_current),
+                    PriceOpen = PyConvert.ToFloat(value.price_open),
+                    Type = PyConvert.ToInt(value.type),
+                    Magic = PyConvert.ToInt(value.magic)
+                };
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
+    public static class ChartConvert
+    {
+        public static int ToRelativeValue(int value, double maxPoints, int panelHeight)
+        {
+            try
+            {
+                var valuePercentage = value / maxPoints * 100;
+
+                return (int)Math.Floor(valuePercentage / 100 * panelHeight);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
     }
 }
