@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FoxyOwl.Models
 {
-    public enum Resolutions
+    public enum Resolution
     {
         M1 = 1,
         M2 = 2,
@@ -16,5 +16,18 @@ namespace FoxyOwl.Models
         M10 = 10,
         M15 = 15,
         M30 = 30
+    }
+    public enum MacdColour
+    {
+        DimGray = 0,
+        LimeGreen = 1,
+        Green = 2,
+        Red = 3,
+        Firebrick = 4
+    }
+    public enum EmaPeriod
+    {
+        Fast = 8,
+        Slow = 17
     }
 }

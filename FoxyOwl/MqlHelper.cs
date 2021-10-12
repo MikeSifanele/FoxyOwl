@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using Python.Runtime;
 using FoxyOwl.Models;
+using FoxyOwl.Indicators;
 
 namespace FoxyOwl
 {
@@ -27,10 +28,14 @@ namespace FoxyOwl
             }
         }
         #endregion
-        public string Symbol = "Volatility 10 Index";
-        public MqlHelper()
+        public string Symbol = "";
+        public List<MacdRates> MacdRates = null;
+        public MqlHelper(string symbol = "Volatility 10 Index")
         {
             Runtime.PythonDLL = @"C:\Python\36\python36.dll";
+
+            Symbol = symbol;
+            MacdRates = GetMacdRates(symbol, period: (int)Resolution.M3);
         }
         public List<MqlRates> GetMqlRates(string symbol, int period = 1, int index = 1, int count = 200_000)
         {
@@ -56,6 +61,44 @@ namespace FoxyOwl
                 catch (Exception)
                 {
                     return new List<MqlRates>();
+                }
+            }
+        }
+        public List<MacdRates> GetMacdRates(string symbol, int period = 1, int index = 1, int count = 200_000)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    dynamic rates = mt5.copy_rates_from_pos(symbol, period, index, count);
+
+                    var results = new List<MacdRates>();
+
+                    results.Add(PyConvert.ToMacdRates(rates[0]));
+
+                    float fastEma, slowEma = 0;
+
+                    fastEma = slowEma = results[0].Close;
+
+                    for (int i = results.Count; i < PyConvert.ToInt(rates.size); i++)
+                    {
+                        results.Add(PyConvert.ToMacdRates(rates[i]));
+
+                        fastEma = Macd.CalculateEMA(results[i].Close, fastEma, (int)EmaPeriod.Fast);
+                        slowEma = Macd.CalculateEMA(results[i].Close, slowEma, (int)EmaPeriod.Slow);
+
+                        results[i].Macd = Macd.CalculateMacd(fastEma, slowEma);
+                    }
+
+                    return results;
+                }
+                catch (Exception)
+                {
+                    return new List<MacdRates>();
                 }
             }
         }

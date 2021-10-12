@@ -92,9 +92,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Indicators\Indicators.cs" />
     <Compile Include="Models\Candlestick.cs" />
     <Compile Include="Models\Converter.cs" />
-    <Compile Include="Models\ENUMs.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Rates.cs" />
     <Compile Include="MqlHelper.cs" />
     <Compile Include="Program.cs" />

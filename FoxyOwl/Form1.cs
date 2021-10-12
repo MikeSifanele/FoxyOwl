@@ -48,7 +48,7 @@ namespace FoxyOwl
         {
             try
             {
-                var mqlRates = MqlHelper.Instance.GetMqlRates(_symbol, period: (int)Resolutions.M3);
+                var mqlRates = MqlHelper.Instance.GetMqlRates(_symbol, period: (int)Resolution.M3);
             }
             catch (Exception ex)
             {
