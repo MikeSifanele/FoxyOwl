@@ -19,7 +19,7 @@ namespace FoxyOwl.Models
     }
     public enum MacdColour
     {
-        DimGray = 0,
+        Neutral = 0,
         LimeGreen = 1,
         Green = 2,
         Red = 3,
