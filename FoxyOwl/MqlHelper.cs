@@ -71,7 +71,7 @@ namespace FoxyOwl
                 }
             }
         }
-        public TradePosition[] GetOpenPositions(string symbol)
+        public int GetTotalPositions(string symbol = "")
         {
             try
             {
@@ -81,16 +81,54 @@ namespace FoxyOwl
 
                     _ = mt5.initialize();
 
-                    TradePosition[] openPositions = new TradePosition[PyConvert.ToInt(mt5.positions_total())];
+                    TradePosition tradePosition = null;
+
+                    int totalPositions = PyConvert.ToInt(mt5.positions_total());
+
+                    if (!string.IsNullOrEmpty(symbol))
+                    {
+                        int positionsCount = 0;
+                        dynamic positions = mt5.positions_get(symbol: symbol);
+
+                        for (int i = 0; i < totalPositions; i++)
+                        {
+                            tradePosition = PyConvert.ToTradePosition(positions[i]);
+
+                            if (tradePosition?.Symbol == symbol)
+                                positionsCount++;
+                        }
+
+                        return positionsCount;
+                    }
+                    else
+                        return totalPositions;
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+        public TradePosition[] GetTradePositions(string symbol)
+        {
+            try
+            {
+                using (Py.GIL())
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    TradePosition[] tradePositions = new TradePosition[PyConvert.ToInt(mt5.positions_total())];
 
                     dynamic positions = mt5.positions_get(symbol: symbol);
 
-                    for (int i = 0; i < openPositions.Length; i++)
+                    for (int i = 0; i < tradePositions.Length; i++)
                     {
-                        openPositions[i] = PyConvert.ToTradePosition(positions[i]);
+                        tradePositions[i] = PyConvert.ToTradePosition(positions[i]);
                     }
 
-                    return openPositions;
+                    return tradePositions;
                 }
             }
             catch (Exception)
@@ -140,6 +178,7 @@ namespace FoxyOwl
                     var results = new List<MacdRates>();
 
                     results.Add(PyConvert.ToMacdRates(rates[0]));
+                    results[0].SetCandleColour((int)MacdColour.Neutral);
 
                     float fastEma, slowEma = 0;
 

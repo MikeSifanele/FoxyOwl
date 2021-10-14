@@ -13,6 +13,7 @@ namespace FoxyOwl.Models
         public int WickWidth { get; set; }
         public int BodyHeight { get; set; }
         public int BodyWidth { get; set; }
+        public Brush Brush { get; set; }
     }
     public class MqlRates
     {
@@ -30,46 +31,45 @@ namespace FoxyOwl.Models
         public float Low;
         public float Close;
         public float Macd;
+        public int Colour;
 
-        public Brush Colour;
         public CandleGraphics CandleGraphics;
-        public void SetCandleColour(float macdColour)
+        public void SetCandleColour(int macdColour)
         {
             try
             {
+                Colour = macdColour;
+
                 switch (macdColour)
                 {
-                    case (float)MacdColour.LimeGreen:
-                        Colour = new SolidBrush(Color.LimeGreen);
+                    case (int)MacdColour.LimeGreen:
+                        CandleGraphics.Brush = new SolidBrush(Color.LimeGreen);
                         break;
-                    case (float)MacdColour.Green:
-                        Colour = new SolidBrush(Color.Green);
+                    case (int)MacdColour.Green:
+                        CandleGraphics.Brush = new SolidBrush(Color.Green);
                         break;
-                    case (float)MacdColour.Red:
-                        Colour = new SolidBrush(Color.Red);
+                    case (int)MacdColour.Red:
+                        CandleGraphics.Brush = new SolidBrush(Color.Red);
                         break;
-                    case (float)MacdColour.Firebrick:
-                        Colour = new SolidBrush(Color.Firebrick);
+                    case (int)MacdColour.Firebrick:
+                        CandleGraphics.Brush = new SolidBrush(Color.Firebrick);
                         break;
                     default:
-                        Colour = new SolidBrush(Color.DimGray);
+                        CandleGraphics.Brush = new SolidBrush(Color.DimGray);
                         break;
                 }
             }
             catch (Exception)
             {
-                Colour = new SolidBrush(Color.DimGray);
+                CandleGraphics.Brush = new SolidBrush(Color.DimGray);
             }
         }
         public void SetCandleDimensions(int bodyWidth = 3, float points = 1_000)
         {
-            CandleGraphics = new CandleGraphics
-            {
-                BodyWidth = bodyWidth,
-                WickWidth = bodyWidth / 3,
-                BodyHeight = (int)((Open > Close ? Open - Close : Close - Open) * points),
-                WickHeight = (int)((High - Low) * points)
-            };
+            CandleGraphics.BodyWidth = bodyWidth;
+            CandleGraphics.WickWidth = bodyWidth / 3;
+            CandleGraphics.BodyHeight = (int)((Open > Close ? Open - Close : Close - Open) * points);
+            CandleGraphics.WickHeight = (int)((High - Low) * points);
         }
         public int GetRelativeValue(int value, double maxPoints, int panelHeight)
         {

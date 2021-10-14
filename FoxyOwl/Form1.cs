@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +16,7 @@ namespace FoxyOwl
     {
         private string _symbol = "Volatility 10 Index";
         private float _volume = 1f;
+        private int _period = 3;
 
         private List<MacdRates> _macdRates = null;
         private int _numChartCandles = 210;
@@ -68,9 +69,9 @@ namespace FoxyOwl
         {
             try
             {
-                _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, period: (int)Resolution.M3);
+                _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, period: _period, count: _numChartCandles);
 
-                LoadChart(_macdRates.Skip(_macdRates.Count - _numChartCandles).Take(_numChartCandles).ToList());
+                LoadChart(_macdRates);
             }
             catch (Exception)
             {
@@ -82,7 +83,7 @@ namespace FoxyOwl
         {
             try
             {
-                var mqlRates = MqlHelper.Instance.GetMqlRates(_symbol, period: (int)Resolution.M3);
+                var mqlRates = MqlHelper.Instance.GetMqlRates(_symbol, period: _period);
             }
             catch (Exception)
             {
@@ -95,7 +96,7 @@ namespace FoxyOwl
         {
             try
             {
-                LoadChart(_macdRates.Skip(_macdRates.Count - _numChartCandles).Take(_numChartCandles).ToList());
+                LoadChart(_macdRates);
             }
             catch (Exception)
             {
@@ -136,8 +137,8 @@ namespace FoxyOwl
 
                     candlesticks[i].SetCandleDimensions(points: points);
 
-                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(XPoint, bodyOffset, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
-                    candleGraphics.FillRectangle(candlesticks[i].Colour, new Rectangle(XPoint + candlePadding, wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
+                    candleGraphics.FillRectangle(candlesticks[i].CandleGraphics.Brush, new Rectangle(XPoint, bodyOffset, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
+                    candleGraphics.FillRectangle(candlesticks[i].CandleGraphics.Brush, new Rectangle(XPoint + candlePadding, wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
                 }
             }
             catch (Exception)
@@ -151,7 +152,7 @@ namespace FoxyOwl
             {
                 var positionsGraphics = chartPanel.CreateGraphics();
 
-                var positionsOpen = MqlHelper.Instance.GetOpenPositions(symbol);
+                var positionsOpen = MqlHelper.Instance.GetTradePositions(symbol);
 
                 int yPoint = 0;
 
