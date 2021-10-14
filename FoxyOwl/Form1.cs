@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,7 +16,7 @@ namespace FoxyOwl
     public partial class Form1 : Form
     {
         private string _symbol = "Volatility 10 Index";
-        private float _volume = 1f;
+        private float _volume = 10f;
         private int _period = 3;
 
         private List<MacdRates> _macdRates = null;
@@ -43,6 +43,39 @@ namespace FoxyOwl
             try
             {
 
+            }
+            catch (Exception)
+            {
+                
+            }
+        }
+
+        private void CandleTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                Debug.WriteLine($"Ticked at: {DateTime.Now}");
+
+                var timeCurrent = DateTime.Now;
+                var nextTimestamp = timeCurrent.AddMinutes(-(timeCurrent.Minute % _period)).AddSeconds(-(timeCurrent.Second % 59)).AddMinutes(_period);
+
+                CandleTimer.Interval = (int)(nextTimestamp - timeCurrent).TotalMilliseconds;
+
+                if (MqlHelper.Instance.GetTotalPositions(_symbol) > 0)
+                {
+                    MqlHelper.Instance.PositionCloseAll(_symbol);
+                }
+
+                _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
+
+                if (_macdRates[_numChartCandles - 1].Colour == (int)MacdColour.LimeGreen)
+                {
+                    MqlHelper.Instance.OpenBuyOrder(_symbol, _volume, "bought on Lime");
+                }
+                else if (_macdRates[_numChartCandles - 1].Colour == (int)MacdColour.Red)
+                {
+                    MqlHelper.Instance.OpenSellOrder(_symbol, _volume, "sold on Red");
+                }
             }
             catch (Exception)
             {
