@@ -315,5 +315,25 @@ namespace FoxyOwl
                 }
             }
         }
+        public int GetTickVolume(string symbol, int period, int index = 0)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    dynamic rates = mt5.copy_rates_from_pos(symbol, period, index, 1);
+
+                    return PyConvert.ToInt(rates[0][5]);
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+            }
+        }
     }
 }
