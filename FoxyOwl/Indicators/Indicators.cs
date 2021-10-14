@@ -34,30 +34,30 @@ namespace FoxyOwl.Indicators
                 return 0f;
             }
         }
-        public static float CalculateCandleColour(float prevMacd, float currMacd)
+        public static int CalculateCandleColour(float prevMacd, float currMacd)
         {
             try
             {
                 if (currMacd > 0)
                 {
                     if (currMacd > prevMacd)
-                        return (float)MacdColour.LimeGreen;
+                        return (int)MacdColour.LimeGreen;
                     if (currMacd < prevMacd)
-                        return (float)MacdColour.Green;
+                        return (int)MacdColour.Green;
                 }
                 else if (currMacd < 0)
                 {
                     if (currMacd < prevMacd)
-                        return (float)MacdColour.Red;
+                        return (int)MacdColour.Red;
                     if (currMacd > prevMacd)
-                        return (float)MacdColour.Firebrick;
+                        return (int)MacdColour.Firebrick;
                 }
 
-                return (float)MacdColour.Neutral;
+                return (int)MacdColour.Neutral;
             }
             catch (Exception)
             {
-                return (float)MacdColour.Neutral;
+                return (int)MacdColour.Neutral;
             }
         }
     }
