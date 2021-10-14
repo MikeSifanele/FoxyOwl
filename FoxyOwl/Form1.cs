@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -20,9 +21,33 @@ namespace FoxyOwl
 
         private List<MacdRates> _macdRates = null;
         private int _numChartCandles = 210;
+
+        private Timer CandleTimer = null;
         public Form1()
         {
             InitializeComponent();
+
+            btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = btnDownload.Enabled = false;
+            
+            CandleTimer = new Timer()
+            { 
+                Enabled = true,
+                Interval = 500
+            };
+
+            CandleTimer.Tick += CandleTimer_Tick;
+        }
+
+        private void CandleTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+                
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
