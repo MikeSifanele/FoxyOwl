@@ -26,8 +26,6 @@ namespace FoxyOwl
         public Form1()
         {
             InitializeComponent();
-
-            btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = btnDownload.Enabled = false;
             
             CandleTimer = new Timer()
             { 
@@ -186,6 +184,18 @@ namespace FoxyOwl
                     yPoint = ChartConvert.ToRelativeValue((int)Math.Floor((maxHeight - positionsOpen[i].PriceOpen) * points), maxPoints, chartPanel.Height);
                     positionsGraphics.DrawLine(new Pen(Color.Green, 1) { DashStyle = DashStyle.Dash }, new Point(0, y: yPoint), new Point(chartPanel.Width, yPoint));
                 }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void cbAutoTrade_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = cbAutoTrade.Checked;
             }
             catch (Exception)
             {
