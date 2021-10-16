@@ -26,8 +26,6 @@ namespace FoxyOwl
         public Form1()
         {
             InitializeComponent();
-
-            btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = btnDownload.Enabled = false;
             
             CandleTimer = new Timer()
             { 
@@ -104,19 +102,6 @@ namespace FoxyOwl
             }
         }
 
-        private void btnDownload_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var mqlRates = MqlHelper.Instance.GetMqlRates(_symbol, period: _period);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        private int XPoint;
-
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
             try
@@ -129,6 +114,7 @@ namespace FoxyOwl
             }
         }
 
+        private int XPoint;
         private void LoadChart(List<MacdRates> candlesticks)
         {
             try
@@ -153,6 +139,9 @@ namespace FoxyOwl
 
                     var bodyHeight = ChartConvert.ToRelativeValue(candlesticks[i].CandleGraphics.BodyHeight, maxPoints, chartPanel.Height);
                     var wickHeight = ChartConvert.ToRelativeValue(candlesticks[i].CandleGraphics.WickHeight, maxPoints, chartPanel.Height);
+
+                    bodyHeight = bodyHeight > 0 ? bodyHeight : 1;
+                    wickHeight = wickHeight > 0 ? wickHeight : 1;
 
                     //TODO: add body & wick Offset.
                     var bodyOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - Math.Max(candlesticks[i].Open, candlesticks[i].Close)) * points), maxPoints, chartPanel.Height);
@@ -186,6 +175,18 @@ namespace FoxyOwl
                     yPoint = ChartConvert.ToRelativeValue((int)Math.Floor((maxHeight - positionsOpen[i].PriceOpen) * points), maxPoints, chartPanel.Height);
                     positionsGraphics.DrawLine(new Pen(Color.Green, 1) { DashStyle = DashStyle.Dash }, new Point(0, y: yPoint), new Point(chartPanel.Width, yPoint));
                 }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void cbAutoTrade_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = cbAutoTrade.Checked;
             }
             catch (Exception)
             {
