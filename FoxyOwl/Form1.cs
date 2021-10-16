@@ -147,9 +147,9 @@ namespace FoxyOwl
                     var bodyOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - Math.Max(candlesticks[i].Open, candlesticks[i].Close)) * points), maxPoints, chartPanel.Height);
                     var wickOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - candlesticks[i].High) * points), maxPoints, chartPanel.Height);
 
-                    var candleGraphics = chartPanel.CreateGraphics();
-
                     candlesticks[i].SetCandleDimensions(points: points);
+
+                    var candleGraphics = chartPanel.CreateGraphics();
 
                     candleGraphics.FillRectangle(candlesticks[i].CandleGraphics.Brush, new Rectangle(XPoint, bodyOffset, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
                     candleGraphics.FillRectangle(candlesticks[i].CandleGraphics.Brush, new Rectangle(XPoint + candlePadding, wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
