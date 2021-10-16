@@ -102,19 +102,6 @@ namespace FoxyOwl
             }
         }
 
-        private void btnDownload_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var mqlRates = MqlHelper.Instance.GetMqlRates(_symbol, period: _period);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        private int XPoint;
-
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
             try
@@ -127,6 +114,7 @@ namespace FoxyOwl
             }
         }
 
+        private int XPoint;
         private void LoadChart(List<MacdRates> candlesticks)
         {
             try
