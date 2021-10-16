@@ -94,7 +94,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Indicators\Indicators.cs" />
-    <Compile Include="Models\Candlestick.cs" />
+    <Compile Include="Models\CandleChart.cs" />
     <Compile Include="Models\Converter.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Models.cs" />
