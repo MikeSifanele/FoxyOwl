@@ -53,10 +53,10 @@ namespace FoxyOwl
                         return;
                 }
 
+                _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
+
                 if (cbAutoTrade.Checked)
                 {
-                    _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
-
                     var lotSize = MqlHelper.Instance.GetLotSize(_symbol, _lotPercent);
                     var tradeComment = MqlHelper.Instance.GetTradePositions(_symbol)?.FirstOrDefault()?.Comment;
 
@@ -222,6 +222,18 @@ namespace FoxyOwl
             try
             {
                 btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = cbAutoTrade.Checked;
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void chartPanel_ClientSizeChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                mainPanel_Paint(null, null);
             }
             catch (Exception)
             {

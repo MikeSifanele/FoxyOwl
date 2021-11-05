@@ -279,6 +279,7 @@ namespace FoxyOwl
             this.chartPanel.Padding = new System.Windows.Forms.Padding(3);
             this.chartPanel.Size = new System.Drawing.Size(1530, 766);
             this.chartPanel.TabIndex = 2;
+            this.chartPanel.ClientSizeChanged += new System.EventHandler(this.chartPanel_ClientSizeChanged);
             this.chartPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
             // 
             // tableLayoutPanel5
@@ -326,7 +327,7 @@ namespace FoxyOwl
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Trash Panda Home";
+            this.Text = "Trash Panda";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
