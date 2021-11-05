@@ -326,5 +326,19 @@ namespace FoxyOwl
                 }
             }
         }
+        public int GetCandleInterval(int period)
+        {
+            try
+            {
+                var timeCurrent = DateTime.Now;
+                var nextTimestamp = timeCurrent.AddMinutes(-(timeCurrent.Minute % period)).AddSeconds(-(timeCurrent.Second % 59)).AddMinutes(period);
+
+                return (int)(nextTimestamp - timeCurrent).TotalMilliseconds;
+            }
+            catch (Exception)
+            {
+                return 1_000;
+            }
+        }
     }
 }

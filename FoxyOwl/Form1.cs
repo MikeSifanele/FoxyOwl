@@ -23,6 +23,7 @@ namespace FoxyOwl
         private int _numChartCandles = 210;
 
         private Timer CandleTimer = null;
+        private bool _isCandleTimerSynced = false;
         public Form1()
         {
             InitializeComponent();
@@ -30,8 +31,11 @@ namespace FoxyOwl
             CandleTimer = new Timer()
             { 
                 Enabled = true,
-                Interval = 500
+                Interval = MqlHelper.Instance.GetCandleInterval(_period)
             };
+
+            CandleTimer_Tick(null, null);
+            _isCandleTimerSynced = false;
 
             CandleTimer.Tick += CandleTimer_Tick;
         }
@@ -40,7 +44,11 @@ namespace FoxyOwl
         {
             try
             {
-
+                if (!_isCandleTimerSynced)
+                {
+                    CandleTimer.Interval = MqlHelper.Instance.GetCandleInterval(_period);
+                    _isCandleTimerSynced = true;
+                }
             }
             catch (Exception)
             {
