@@ -340,5 +340,39 @@ namespace FoxyOwl
                 return 1_000;
             }
         }
+        public double GetLotSize(string symbol, int percent = 10)
+        {
+            using (Py.GIL())
+            {
+                try
+                {
+                    dynamic mt5 = Py.Import("MetaTrader5");
+
+                    _ = mt5.initialize();
+
+                    var symbolInfo = mt5.symbol_info(symbol);
+
+                    var volume_min = PyConvert.ToDouble(symbolInfo.volume_min);
+                    var volume_max = PyConvert.ToDouble(symbolInfo.volume_max);
+                    var volume_step = PyConvert.ToDouble(symbolInfo.volume_step);
+                    var digits = PyConvert.ToInt(symbolInfo.digits) + 1;
+
+                    var equity = PyConvert.ToDouble(mt5.account_info().equity);
+
+                    var lotSize = PyConvert.Trancate(equity * volume_step * (percent / 100f), digits);
+
+                    if (lotSize > volume_max)
+                        return volume_max;
+                    else if (lotSize < volume_min)
+                        return volume_min;
+                    else
+                        return lotSize;
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+            }
+        }
     }
 }
