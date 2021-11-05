@@ -24,7 +24,9 @@ namespace FoxyOwl
         private int _numChartCandles = 220;
 
         private Timer CandleTimer = null;
+        private Timer CurrentCandleTimer = null;
         private bool _isCandleTimerSynced = false;
+        private bool _isCurrentCandleTimerSynced = false;
         #endregion
 
         public Form1()
@@ -32,14 +34,22 @@ namespace FoxyOwl
             InitializeComponent();
 
             CandleTimer = new Timer()
-            { 
+            {
                 Enabled = true,
                 Interval = MqlHelper.Instance.GetCandleInterval(_period)
             };
 
+            CandleTimer.Tick += CandleTimer_Tick;
             CandleTimer_Tick(null, null);
 
-            CandleTimer.Tick += CandleTimer_Tick;
+            CurrentCandleTimer = new Timer()
+            {
+                Enabled = true,
+                Interval = MqlHelper.Instance.GetCandleInterval(1)
+            };
+
+            CurrentCandleTimer.Tick += CurrentCandleTimer_Tick;
+            CurrentCandleTimer_Tick(null, null);
         }
 
         #region Navigation events
@@ -50,7 +60,7 @@ namespace FoxyOwl
 
         private void btnForward_Click(object sender, EventArgs e)
         {
-            
+
         }
         #endregion
 
@@ -247,6 +257,40 @@ namespace FoxyOwl
                         }
                     }
                 }
+
+                mainPanel_Paint(null, null);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void CurrentCandleTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                var currentCandle = new MacdRates();
+
+                if (!_isCurrentCandleTimerSynced)
+                {
+                    CurrentCandleTimer.Interval = MqlHelper.Instance.GetCandleInterval(1);
+
+                    if (sender != null)
+                        _isCurrentCandleTimerSynced = true;
+                    else
+                    {
+                        currentCandle = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: 1)[0];
+
+                        if (currentCandle != null)
+                            _macdRates[_numChartCandles - 1] = currentCandle;
+
+                        mainPanel_Paint(null, null);
+                        return;
+                    }
+                }
+
+                mainPanel_Paint(null, null);
             }
             catch (Exception)
             {
