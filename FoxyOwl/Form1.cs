@@ -15,8 +15,8 @@ namespace FoxyOwl
 {
     public partial class Form1 : Form
     {
-        private string _symbol = "Volatility 10 Index";
-        private float _volume = 1f;
+        private string _symbol = "Volatility 75 Index";
+        private int _lotPercent = 10;
         private int _period = 3;
 
         private List<MacdRates> _macdRates = null;
@@ -27,7 +27,7 @@ namespace FoxyOwl
         public Form1()
         {
             InitializeComponent();
-            
+
             CandleTimer = new Timer()
             { 
                 Enabled = true,
@@ -35,7 +35,6 @@ namespace FoxyOwl
             };
 
             CandleTimer_Tick(null, null);
-            _isCandleTimerSynced = false;
 
             CandleTimer.Tick += CandleTimer_Tick;
         }
@@ -47,7 +46,11 @@ namespace FoxyOwl
                 if (!_isCandleTimerSynced)
                 {
                     CandleTimer.Interval = MqlHelper.Instance.GetCandleInterval(_period);
-                    _isCandleTimerSynced = true;
+
+                    if (sender != null)
+                        _isCandleTimerSynced = true;
+                    else
+                        return;
                 }
             }
             catch (Exception)
