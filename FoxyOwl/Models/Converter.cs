@@ -100,11 +100,13 @@ namespace FoxyOwl.Models
             {
                 var valuePercentage = value / maxPoints * 100;
 
-                return (int)Math.Floor(valuePercentage / 100 * panelHeight);
+                var results = (int)Math.Floor(valuePercentage / 100 * panelHeight);
+
+                return results == 0? 1: results;
             }
             catch (Exception)
             {
-                return 0;
+                return 1;
             }
         }
     }

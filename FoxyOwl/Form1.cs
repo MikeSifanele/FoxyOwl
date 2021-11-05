@@ -140,9 +140,6 @@ namespace FoxyOwl
                     var bodyHeight = ChartConvert.ToRelativeValue(candlesticks[i].CandleGraphics.BodyHeight, maxPoints, chartPanel.Height);
                     var wickHeight = ChartConvert.ToRelativeValue(candlesticks[i].CandleGraphics.WickHeight, maxPoints, chartPanel.Height);
 
-                    bodyHeight = bodyHeight > 0 ? bodyHeight : 1;
-                    wickHeight = wickHeight > 0 ? wickHeight : 1;
-
                     //TODO: add body & wick Offset.
                     var bodyOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - Math.Max(candlesticks[i].Open, candlesticks[i].Close)) * points), maxPoints, chartPanel.Height);
                     var wickOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - candlesticks[i].High) * points), maxPoints, chartPanel.Height);

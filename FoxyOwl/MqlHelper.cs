@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
-using Newtonsoft.Json;
 using Python.Runtime;
 using FoxyOwl.Models;
 using FoxyOwl.Indicators;
@@ -26,14 +19,12 @@ namespace FoxyOwl
 
                 return _instance;
             }
+            set { _instance = value; }
         }
         #endregion
-        public string Symbol = "";
-        public MqlHelper(string symbol = "Volatility 10 Index")
+        public MqlHelper(string pythonPath = @"C:\Python\36\python36.dll")
         {
-            Runtime.PythonDLL = @"C:\Python\36\python36.dll";
-
-            Symbol = symbol;
+            Runtime.PythonDLL = pythonPath;
         }
         public int GetPoints(string symbol)
         {
