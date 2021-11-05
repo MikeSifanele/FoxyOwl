@@ -154,7 +154,7 @@ namespace FoxyOwl
                 }
             }
         }
-        public List<MacdRates> GetMacdRates(string symbol, int period = 1, int index = 1, int count = 200_000)
+        public List<MacdRates> GetMacdRates(string symbol, int period = 1, int index = 0, int count = 200_000)
         {
             using (Py.GIL())
             {

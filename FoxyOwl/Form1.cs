@@ -21,7 +21,7 @@ namespace FoxyOwl
         private int _period = 3;
 
         private List<MacdRates> _macdRates = null;
-        private int _numChartCandles = 210;
+        private int _numChartCandles = 220;
 
         private Timer CandleTimer = null;
         private bool _isCandleTimerSynced = false;
@@ -216,10 +216,12 @@ namespace FoxyOwl
                     if (sender != null)
                         _isCandleTimerSynced = true;
                     else
-                        return;
-                }
+                    {
+                        _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
 
-                _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
+                        return;
+                    }
+                }
 
                 if (cbAutoTrade.Checked)
                 {
