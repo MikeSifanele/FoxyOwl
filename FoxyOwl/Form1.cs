@@ -68,7 +68,7 @@ namespace FoxyOwl
 
         private void btnBuy_Click(object sender, EventArgs e)
         {
-            if (!MqlHelper.Instance.OpenBuyOrder(_symbol, _volume, "Bought manually"))
+            if (!MqlHelper.Instance.OpenBuyOrder(_symbol, MqlHelper.Instance.GetLotSize(_symbol, _lotPercent), "Bought manually"))
             {
 
             }
@@ -78,7 +78,7 @@ namespace FoxyOwl
 
         private void btnSell_Click(object sender, EventArgs e)
         {
-            if (!MqlHelper.Instance.OpenSellOrder(_symbol, _volume, "Sold manually"))
+            if (!MqlHelper.Instance.OpenSellOrder(_symbol, MqlHelper.Instance.GetLotSize(_symbol, _lotPercent), "Sold manually"))
             {
 
             }
