@@ -91,6 +91,19 @@ namespace FoxyOwl.Models
                 return null;
             }
         }
+        public static double Trancate(double value, int digits)
+        {
+            try
+            {
+                var results = value.ToString().Split('.');
+
+                return double.Parse($"{results[0]}.{results[1].Substring(0, digits)}");
+            }
+            catch (Exception)
+            {
+                return value;
+            }
+        }
     }
     public static class ChartConvert
     {
