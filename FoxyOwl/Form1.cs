@@ -52,6 +52,33 @@ namespace FoxyOwl
                     else
                         return;
                 }
+
+                if (cbAutoTrade.Checked)
+                {
+                    _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
+
+                    var lotSize = MqlHelper.Instance.GetLotSize(_symbol, _lotPercent);
+                    var tradeComment = MqlHelper.Instance.GetTradePositions(_symbol)?.FirstOrDefault()?.Comment;
+
+                    if (_macdRates[_numChartCandles - 1].Colour == (int)MacdColour.LimeGreen)
+                    {
+                        MqlHelper.Instance.OpenBuyOrder(_symbol, lotSize, "bought on Lime");
+
+                        if (MqlHelper.Instance.GetTotalPositions(_symbol) > 0 && cbCloseOppositeTrade.Checked && tradeComment == "sold on Red")
+                        {
+                            MqlHelper.Instance.PositionCloseAll(_symbol);
+                        }
+                    }
+                    else if (_macdRates[_numChartCandles - 1].Colour == (int)MacdColour.Red)
+                    {
+                        MqlHelper.Instance.OpenSellOrder(_symbol, lotSize, "sold on Red");
+
+                        if (MqlHelper.Instance.GetTotalPositions(_symbol) > 0 && cbCloseOppositeTrade.Checked && tradeComment == "bought on Lime")
+                        {
+                            MqlHelper.Instance.PositionCloseAll(_symbol);
+                        }
+                    }
+                }
             }
             catch (Exception)
             {
