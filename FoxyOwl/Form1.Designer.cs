@@ -241,6 +241,7 @@ namespace FoxyOwl
             this.cbAutoTrade.Text = "Auto trade";
             this.cbAutoTrade.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.cbAutoTrade.UseVisualStyleBackColor = false;
+            this.cbAutoTrade.CheckedChanged += new System.EventHandler(this.cbAutoTrade_CheckedChanged);
             // 
             // tableLayoutPanel3
             // 

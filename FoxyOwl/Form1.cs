@@ -99,7 +99,7 @@ namespace FoxyOwl
         {
             try
             {
-                btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = cbAutoTrade.Checked;
+                btnBack.Enabled = btnForward.Enabled = btnBuy.Enabled = btnSell.Enabled = btnPositionsCloseAll.Enabled = !cbAutoTrade.Checked;
             }
             catch (Exception)
             {
