@@ -119,7 +119,7 @@ namespace FoxyOwl
                 {
                     XPoint += _bodyWidth + candlePadding;
 
-                    if (i > 0 && candlesticks[i-1].Time.Day != candlesticks[i].Time.Day)
+                    if (i > 0 && candlesticks[i - 1].Time.Day != candlesticks[i].Time.Day)
                     {
                         var periodSeparator = chartPanel.CreateGraphics();
                         periodSeparator.DrawLine(new Pen(Color.LightGray, 1) { DashStyle = DashStyle.Dash }, new Point(XPoint, y: 0), new Point(XPoint, chartPanel.Height));
