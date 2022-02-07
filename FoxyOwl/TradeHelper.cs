@@ -64,7 +64,8 @@ namespace FoxyOwl
         #endregion
         #region Public properties
         public int ObservationLength => _observationLength;
-        public int CurrentStepIndex => _index - _startIndex;
+        public int CurrentIndex => _index - _startIndex;
+        public bool CanGoBack => _index > _startIndex;
         public bool IsLastStep => _index == MaximumRates - 2;
         public int MaximumRates => _rates.Length - 1;
         public int Points => 100;
@@ -256,9 +257,9 @@ namespace FoxyOwl
         {
             return value.ToString("N", CultureInfo.CreateSpecificCulture("sv-SE"));
         }
-        public bool Step()
+        public bool Step(int increment = 1)
         {
-            _index++;
+            _index += increment;
 
             return IsLastStep;
         }

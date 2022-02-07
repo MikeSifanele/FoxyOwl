@@ -55,12 +55,36 @@ namespace FoxyOwl
         #region Navigation events
         private void btnBack_Click(object sender, EventArgs e)
         {
+            if (MLTrader.Instance.CanGoBack)
+            {
+                _ = MLTrader.Instance.Step(-1);
 
+                LoadChart(MLTrader.Instance.GetObservation());
+            }
+            else
+            {
+                btnBack.Enabled = false;
+            }
+
+            if (!btnForward.Enabled)
+                btnForward.Enabled = MLTrader.Instance.IsLastStep;
         }
 
         private void btnForward_Click(object sender, EventArgs e)
         {
+            if (!MLTrader.Instance.IsLastStep)
+            {
+                _ = MLTrader.Instance.Step();
 
+                LoadChart(MLTrader.Instance.GetObservation());
+            }
+            else
+            {
+                btnForward.Enabled = false;
+            }
+
+            if (!btnBack.Enabled)
+                btnBack.Enabled = MLTrader.Instance.CanGoBack;
         }
         #endregion
 
