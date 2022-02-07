@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Python.Runtime;
+using FoxyOwl.Models;
+using System.Drawing;
 
-namespace FoxyOwl.Models
+namespace FoxyOwl.Converters
 {
     public static class PyConvert
     {
@@ -30,13 +32,13 @@ namespace FoxyOwl.Models
         {
             return (int)PyInt.AsInt(value) == 1;
         }
-        public static MqlRates ToMqlRates(dynamic value)
+        public static Rates ToMqlRates(dynamic value)
         {
             try
             {
-                return new MqlRates()
+                return new Rates()
                 {
-                    Timestamp = PyConvert.ToDateTime(value[0]),
+                    Time = PyConvert.ToDateTime(value[0]),
                     Open = PyConvert.ToFloat(value[1]),
                     High = PyConvert.ToFloat(value[2]),
                     Low = PyConvert.ToFloat(value[3]),
@@ -45,27 +47,7 @@ namespace FoxyOwl.Models
             }
             catch (Exception)
             {
-                return null;
-            }
-        }
-        public static MacdRates ToMacdRates(dynamic value)
-        {
-            try
-            {
-                return new MacdRates()
-                {
-                    Timestamp = PyConvert.ToDateTime(value[0]),
-                    Open = PyConvert.ToFloat(value[1]),
-                    High = PyConvert.ToFloat(value[2]),
-                    Low = PyConvert.ToFloat(value[3]),
-                    Close = PyConvert.ToFloat(value[4]),
-                    Macd = 0,
-                    CandleGraphics = new CandleGraphics()
-                };
-            }
-            catch (Exception)
-            {
-                return null;
+                return default;
             }
         }
         public static TradePosition ToTradePosition(dynamic value)
@@ -107,6 +89,7 @@ namespace FoxyOwl.Models
     }
     public static class ChartConvert
     {
+        private static readonly int _points = 100;
         public static int ToRelativeValue(int value, double maxPoints, int panelHeight)
         {
             try
@@ -115,12 +98,51 @@ namespace FoxyOwl.Models
 
                 var results = (int)Math.Floor(valuePercentage / 100 * panelHeight);
 
-                return results == 0? 1: results;
+                return results == 0 ? 1 : results;
             }
             catch (Exception)
             {
                 return 1;
             }
+        }
+        public static int GetBodyHeight(float open, float close)
+        {
+            return (int)((open > close ? open - close : close - open) * _points);
+        }
+        public static int GetBodyHeight(Rates rates)
+        {
+            return (int)((rates.Open > rates.Close ? rates.Open - rates.Close : rates.Close - rates.Open) * _points);
+        }
+        public static int GetWickHeight(float high, float low)
+        {
+            return (int)((high - low) * _points);
+        }
+        public static int GetWickHeight(Rates rates)
+        {
+            return (int)((rates.High - rates.Low) * _points);
+        }
+        public static Brush GetCandleColour(Rates rates)
+        {
+            return rates.Close > rates.Open ? new SolidBrush(Color.LimeGreen) : new SolidBrush(Color.Red);
+        }
+    }
+    public static class NumberConvert
+    {
+        public static Color ToColour(TextColourEnum textColour)
+        {
+            switch (textColour)
+            {
+                case TextColourEnum.Warning:
+                    return Color.Orange;
+                case TextColourEnum.Error:
+                    return Color.Red;
+                case TextColourEnum.Info:
+                    return Color.LightGray;
+                case TextColourEnum.Success:
+                    return Color.LimeGreen;
+            }
+
+            return Color.Purple;
         }
     }
 }

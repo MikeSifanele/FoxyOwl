@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FoxyOwl.Models;
+using FoxyOwl.Converters;
 
 namespace FoxyOwl
 {
@@ -19,8 +20,16 @@ namespace FoxyOwl
         private string _symbol = "Volatility 75 Index";
         private int _lotPercent = 10;
         private int _period = 3;
+        /// <summary>
+        /// Width of a candle's wick.
+        /// </summary>
+        private int _wickWidth = 1;
+        /// <summary>
+        /// Width of a candle's body(3x the wick).
+        /// </summary>
+        private int _bodyWidth = 3;
 
-        private List<MacdRates> _macdRates = null;
+        private Rates[] _rates = null;
         private int _numChartCandles = 220;
 
         private Timer CandleTimer = null;
@@ -28,28 +37,19 @@ namespace FoxyOwl
         private bool _isCandleTimerSynced = false;
         private bool _isCurrentCandleTimerSynced = false;
         #endregion
+        private void MLTrader_Print(string message, TextColourEnum textColour)
+        {
+            var listItem = new ListViewItem()
+            {
+                Text = $"{DateTime.Now.ToShortTimeString()}: {message}.",
+                ForeColor = NumberConvert.ToColour(textColour),
+            };
 
+            lbOutput.Items.Add(listItem);
+        }
         public Form1()
         {
             InitializeComponent();
-
-            CandleTimer = new Timer()
-            {
-                Enabled = true,
-                Interval = MqlHelper.Instance.GetCandleInterval(_period)
-            };
-
-            CandleTimer.Tick += CandleTimer_Tick;
-            CandleTimer_Tick(null, null);
-
-            CurrentCandleTimer = new Timer()
-            {
-                Enabled = true,
-                Interval = MqlHelper.Instance.GetCandleInterval(1)
-            };
-
-            CurrentCandleTimer.Tick += CurrentCandleTimer_Tick;
-            CurrentCandleTimer_Tick(null, null);
         }
 
         #region Navigation events
@@ -67,31 +67,18 @@ namespace FoxyOwl
         #region Click events
         private void btnBuy_Click(object sender, EventArgs e)
         {
-            if (!MqlHelper.Instance.OpenBuyOrder(_symbol, MqlHelper.Instance.GetLotSize(_symbol, _lotPercent), "Bought manually"))
-            {
-
-            }
-
+            _ = MLTrader.Instance.Step();
             chartPanel.Refresh();
         }
 
         private void btnSell_Click(object sender, EventArgs e)
         {
-            if (!MqlHelper.Instance.OpenSellOrder(_symbol, MqlHelper.Instance.GetLotSize(_symbol, _lotPercent), "Sold manually"))
-            {
-
-            }
-
+            _ = MLTrader.Instance.Step();
             chartPanel.Refresh();
         }
 
         private void btnPositionsCloseAll_Click(object sender, EventArgs e)
         {
-            if (!MqlHelper.Instance.PositionCloseAll(_symbol))
-            {
-
-            }
-
             chartPanel.Refresh();
         }
 
@@ -110,7 +97,7 @@ namespace FoxyOwl
 
         #region Custom methods
         private int XPoint;
-        private void LoadChart(List<MacdRates> candlesticks)
+        private void LoadChart(Rates[] candlesticks)
         {
             try
             {
@@ -121,30 +108,38 @@ namespace FoxyOwl
                 var candlesMaxHeight = candlesticks.Max(x => x.High);
                 var candlesMinHeight = candlesticks.Min(x => x.Low);
 
-                var points = MqlHelper.Instance.GetPoints(_symbol);
+                var points = MLTrader.Instance.Points;
 
                 var maxPoints = Math.Floor((candlesMaxHeight - candlesMinHeight) * points);
-                var candlePadding = candlesticks[0].CandleGraphics.WickWidth;
+                var candlePadding = 1;
 
                 PlotOpenPositions(_symbol, points, maxPoints, candlesMaxHeight);
 
-                for (int i = 0; i < candlesticks.Count; i++)
+                for (int i = 0; i < candlesticks.Length; i++)
                 {
-                    XPoint += candlesticks[i].CandleGraphics.BodyWidth + candlePadding;
+                    XPoint += _bodyWidth + candlePadding;
 
-                    var bodyHeight = ChartConvert.ToRelativeValue(candlesticks[i].CandleGraphics.BodyHeight, maxPoints, chartPanel.Height);
-                    var wickHeight = ChartConvert.ToRelativeValue(candlesticks[i].CandleGraphics.WickHeight, maxPoints, chartPanel.Height);
+                    if (i > 0 && candlesticks[i-1].Time.Day != candlesticks[i].Time.Day)
+                    {
+                        var periodSeparator = chartPanel.CreateGraphics();
+                        periodSeparator.DrawLine(new Pen(Color.LightGray, 1) { DashStyle = DashStyle.Dash }, new Point(XPoint, y: 0), new Point(XPoint, chartPanel.Height));
+
+                        XPoint++;
+                    }
+
+                    var bodyHeight = ChartConvert.ToRelativeValue(ChartConvert.GetBodyHeight(candlesticks[i]), maxPoints, chartPanel.Height);
+                    var wickHeight = ChartConvert.ToRelativeValue(ChartConvert.GetWickHeight(candlesticks[i]), maxPoints, chartPanel.Height);
 
                     //TODO: add body & wick Offset.
                     var bodyOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - Math.Max(candlesticks[i].Open, candlesticks[i].Close)) * points), maxPoints, chartPanel.Height);
                     var wickOffset = ChartConvert.ToRelativeValue((int)Math.Floor((candlesMaxHeight - candlesticks[i].High) * points), maxPoints, chartPanel.Height);
 
-                    candlesticks[i].SetCandleDimensions(points: points);
-
                     var candleGraphics = chartPanel.CreateGraphics();
 
-                    candleGraphics.FillRectangle(candlesticks[i].CandleGraphics.Brush, new Rectangle(XPoint, bodyOffset, candlesticks[i].CandleGraphics.BodyWidth, bodyHeight));
-                    candleGraphics.FillRectangle(candlesticks[i].CandleGraphics.Brush, new Rectangle(XPoint + candlePadding, wickOffset, candlesticks[i].CandleGraphics.WickWidth, wickHeight));
+                    var candleColour = ChartConvert.GetCandleColour(candlesticks[i]);
+
+                    candleGraphics.FillRectangle(candleColour, new Rectangle(XPoint, bodyOffset, _bodyWidth, bodyHeight));
+                    candleGraphics.FillRectangle(candleColour, new Rectangle(XPoint + candlePadding, wickOffset, _wickWidth, wickHeight));
                 }
             }
             catch (Exception)
@@ -159,13 +154,13 @@ namespace FoxyOwl
             {
                 var positionsGraphics = chartPanel.CreateGraphics();
 
-                var positionsOpen = MqlHelper.Instance.GetTradePositions(symbol);
+                var positionsOpen = MLTrader.Instance.OpenPositions;
 
                 int yPoint = 0;
 
-                for (int i = 0; i < positionsOpen.Length; i++)
+                for (int i = 0; i < positionsOpen.Count; i++)
                 {
-                    yPoint = ChartConvert.ToRelativeValue((int)Math.Floor((maxHeight - positionsOpen[i].PriceOpen) * points), maxPoints, chartPanel.Height);
+                    yPoint = ChartConvert.ToRelativeValue((int)Math.Floor((maxHeight - positionsOpen[i].OpenPrice) * points), maxPoints, chartPanel.Height);
                     positionsGraphics.DrawLine(new Pen(Color.Green, 1) { DashStyle = DashStyle.Dash }, new Point(0, y: yPoint), new Point(chartPanel.Width, yPoint));
                 }
             }
@@ -181,9 +176,10 @@ namespace FoxyOwl
         {
             try
             {
-                _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, period: _period, count: _numChartCandles);
+                MLTrader.Print += MLTrader_Print;
+                _rates = MLTrader.Instance.GetObservation();
 
-                LoadChart(_macdRates);
+                LoadChart(_rates);
             }
             catch (Exception)
             {
@@ -195,7 +191,7 @@ namespace FoxyOwl
         {
             try
             {
-                LoadChart(_macdRates);
+                LoadChart(_rates);
             }
             catch (Exception)
             {
@@ -219,46 +215,7 @@ namespace FoxyOwl
         {
             try
             {
-                if (!_isCandleTimerSynced)
-                {
-                    CandleTimer.Interval = MqlHelper.Instance.GetCandleInterval(_period);
 
-                    if (sender != null)
-                        _isCandleTimerSynced = true;
-                    else
-                    {
-                        _macdRates = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: _numChartCandles);
-
-                        return;
-                    }
-                }
-
-                if (cbAutoTrade.Checked)
-                {
-                    var lotSize = MqlHelper.Instance.GetLotSize(_symbol, _lotPercent);
-                    var tradeComment = MqlHelper.Instance.GetTradePositions(_symbol)?.FirstOrDefault()?.Comment;
-
-                    if (_macdRates[_numChartCandles - 1].Colour == (int)MacdColour.LimeGreen)
-                    {
-                        MqlHelper.Instance.OpenBuyOrder(_symbol, lotSize, "bought on Lime");
-
-                        if (MqlHelper.Instance.GetTotalPositions(_symbol) > 0 && cbCloseOppositeTrade.Checked && tradeComment == "sold on Red")
-                        {
-                            MqlHelper.Instance.PositionCloseAll(_symbol);
-                        }
-                    }
-                    else if (_macdRates[_numChartCandles - 1].Colour == (int)MacdColour.Red)
-                    {
-                        MqlHelper.Instance.OpenSellOrder(_symbol, lotSize, "sold on Red");
-
-                        if (MqlHelper.Instance.GetTotalPositions(_symbol) > 0 && cbCloseOppositeTrade.Checked && tradeComment == "bought on Lime")
-                        {
-                            MqlHelper.Instance.PositionCloseAll(_symbol);
-                        }
-                    }
-                }
-
-                mainPanel_Paint(null, null);
             }
             catch (Exception)
             {
@@ -270,27 +227,7 @@ namespace FoxyOwl
         {
             try
             {
-                var currentCandle = new MacdRates();
 
-                if (!_isCurrentCandleTimerSynced)
-                {
-                    CurrentCandleTimer.Interval = MqlHelper.Instance.GetCandleInterval(1);
-
-                    if (sender != null)
-                        _isCurrentCandleTimerSynced = true;
-                    else
-                    {
-                        currentCandle = MqlHelper.Instance.GetMacdRates(_symbol, _period, count: 1)[0];
-
-                        if (currentCandle != null)
-                            _macdRates[_numChartCandles - 1] = currentCandle;
-
-                        mainPanel_Paint(null, null);
-                        return;
-                    }
-                }
-
-                mainPanel_Paint(null, null);
             }
             catch (Exception)
             {

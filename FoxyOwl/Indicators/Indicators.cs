@@ -34,31 +34,5 @@ namespace FoxyOwl.Indicators
                 return 0f;
             }
         }
-        public static int CalculateCandleColour(float prevMacd, float currMacd)
-        {
-            try
-            {
-                if (currMacd > 0)
-                {
-                    if (currMacd > prevMacd)
-                        return (int)MacdColour.LimeGreen;
-                    if (currMacd < prevMacd)
-                        return (int)MacdColour.Green;
-                }
-                else if (currMacd < 0)
-                {
-                    if (currMacd < prevMacd)
-                        return (int)MacdColour.Red;
-                    if (currMacd > prevMacd)
-                        return (int)MacdColour.Firebrick;
-                }
-
-                return (int)MacdColour.Neutral;
-            }
-            catch (Exception)
-            {
-                return (int)MacdColour.Neutral;
-            }
-        }
     }
 }

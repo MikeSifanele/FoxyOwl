@@ -1,91 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FoxyOwl.Models
 {
-    public class CandleGraphics
+    public class Position
     {
-        public int WickHeight { get; set; }
-        public int WickWidth { get; set; }
-        public int BodyHeight { get; set; }
-        public int BodyWidth { get; set; }
-        public Brush Brush { get; set; }
+        public PositionTime PositionTime;
+        public MarketOrderEnum MarketOrder;
+        public float OpenPrice;
+        public float ClosePrice;
+        public int? StopLoss;
+        public int Profit;
     }
-    public class MqlRates
+    public struct ExpertAction
     {
-        public DateTime Timestamp;
+        public MarketOrderEnum MarketOrder;
+        public int? StopLoss;
+        public ExpertAction(MarketOrderEnum marketOrder, int stopLoss = 30)
+        {
+            MarketOrder = marketOrder;
+            StopLoss = stopLoss;
+        }
+    }
+    public enum MarketOrderEnum
+    {
+        Buy,
+        Sell,
+        Nothing,
+        Count
+    }
+    public struct PositionTime
+    {
+        public DateTime Open;
+        public DateTime? Close;
+        public PositionTime(DateTime timestamp)
+        {
+            Open = timestamp;
+            Close = null;
+        }
+    }
+    public struct Rates
+    {
+        public DateTime Time;
         public float Open;
         public float High;
         public float Low;
         public float Close;
-    }
-    public class MacdRates
-    {
-        public DateTime Timestamp;
-        public float Open;
-        public float High;
-        public float Low;
-        public float Close;
-        public float Macd;
-        public int Colour;
-
-        public CandleGraphics CandleGraphics;
-        public void SetCandleColour(int macdColour)
+        public Rates(string[] data)
         {
-            try
-            {
-                Colour = macdColour;
+            Time = Convert.ToDateTime(data[0]);
 
-                switch (macdColour)
-                {
-                    case (int)MacdColour.LimeGreen:
-                        CandleGraphics.Brush = new SolidBrush(Color.LimeGreen);
-                        break;
-                    case (int)MacdColour.Green:
-                        CandleGraphics.Brush = new SolidBrush(Color.Green);
-                        break;
-                    case (int)MacdColour.Red:
-                        CandleGraphics.Brush = new SolidBrush(Color.Red);
-                        break;
-                    case (int)MacdColour.Firebrick:
-                        CandleGraphics.Brush = new SolidBrush(Color.Firebrick);
-                        break;
-                    default:
-                        CandleGraphics.Brush = new SolidBrush(Color.DimGray);
-                        break;
-                }
-            }
-            catch (Exception)
-            {
-                CandleGraphics.Brush = new SolidBrush(Color.DimGray);
-            }
+            Open = float.Parse(data[1], CultureInfo.InvariantCulture.NumberFormat);
+            High = float.Parse(data[2], CultureInfo.InvariantCulture.NumberFormat);
+            Low = float.Parse(data[3], CultureInfo.InvariantCulture.NumberFormat);
+            Close = float.Parse(data[4], CultureInfo.InvariantCulture.NumberFormat);
         }
-        public void SetCandleDimensions(int bodyWidth = 3, float points = 1_000)
+        public float[] ToFloatArray()
         {
-            CandleGraphics.BodyWidth = bodyWidth;
-            CandleGraphics.WickWidth = bodyWidth / 3;
-            CandleGraphics.BodyHeight = (int)((Open > Close ? Open - Close : Close - Open) * points);
-            CandleGraphics.WickHeight = (int)((High - Low) * points);
-        }
-        public int GetRelativeValue(int value, double maxPoints, int panelHeight)
-        {
-            try
-            {
-                var valuePercentage = value / maxPoints * 100;
-
-                return (int)Math.Floor(valuePercentage / 100 * panelHeight);
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
+            return new float[] { Open, High, Low, Close };
         }
     }
-    //ticket time  type magic  identifier reason  volume price_open       sl tp  price_current swap  profit symbol comment
     public class TradePosition
     {
         public int Ticket;

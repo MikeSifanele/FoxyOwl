@@ -17,7 +17,7 @@ namespace FoxyOwl.Models
         M15 = 15,
         M30 = 30
     }
-    public enum MacdColour
+    public enum RatesColour
     {
         Neutral = 0,
         LimeGreen = 1,
@@ -29,5 +29,12 @@ namespace FoxyOwl.Models
     {
         Fast = 8,
         Slow = 17
+    }
+    public enum TextColourEnum
+    {
+        Warning,
+        Success,
+        Error,
+        Info,
     }
 }
