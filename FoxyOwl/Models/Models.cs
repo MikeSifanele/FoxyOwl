@@ -64,6 +64,10 @@ namespace FoxyOwl.Models
         {
             return new float[] { Open, High, Low, Close };
         }
+        public string DateTimeString()
+        {
+            return $"{Time.Month},{(int)Time.DayOfWeek},{Time.Day},{Time.Hour},{Time.Minute}";
+        }
     }
     public class TradePosition
     {

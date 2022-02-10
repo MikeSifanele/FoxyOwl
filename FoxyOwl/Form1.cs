@@ -50,6 +50,8 @@ namespace FoxyOwl
         public Form1()
         {
             InitializeComponent();
+
+            //DataExport.Export();
         }
 
         #region Navigation events

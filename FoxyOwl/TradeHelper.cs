@@ -17,9 +17,11 @@ namespace FoxyOwl
         public static event WriteToConsoleHandler WriteToConsole;
         #endregion
         static MLTrader _mlTrader;
-        static void Export()
+        public static void Export()
         {
             _mlTrader = new MLTrader();
+
+            _mlTrader.SetIndex(400_000);
 
             using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\xauusd.DAT"))
             {
@@ -28,19 +30,19 @@ namespace FoxyOwl
                 StringBuilder state = new StringBuilder();
                 StringBuilder json = new StringBuilder();
 
-                for (var x = 0; x < 30_000; x++)
+                for (var x = 400_000; x < _mlTrader.MaximumRates - 25_000; x++)
                 {
                     state = new StringBuilder();
-                    var obs = _mlTrader.GetObservation();
+                    var obs = _mlTrader.GetObservation(moveForward: true);
 
                     for (int i = 0; i < _mlTrader.ObservationLength; i++)
                     {
-                        state.Append($",[{obs[i].Open},{obs[i].High},{obs[i].Low},{obs[i].Close}]");
+                        state.Append($",[{obs[i].DateTimeString()}, {obs[i].Open},{obs[i].High},{obs[i].Low},{obs[i].Close}]");
                     }
 
                     states.Append($",[{state.ToString().TrimStart(',')}]");
 
-                    labels.Append($",{_mlTrader.FutureRates.Close}");
+                    labels.Append($",[{_mlTrader.CurrentRates.High},{_mlTrader.CurrentRates.Low},{_mlTrader.CurrentRates.Close}]");
                 }
 
                 json.Append($"{{\"states\":[{states.ToString().TrimStart(',')}],\"labels\":[{labels.ToString().TrimStart(',')}]}}");
@@ -54,7 +56,7 @@ namespace FoxyOwl
         #region Private fields
         private Rates[] _rates;
         private readonly int _observationLength = 240;
-        private readonly int _startIndex = 239;
+        private int _startIndex = 239;
         private int _index;
         private int _epoch = 0;
         private float _accumulativeReward = 0;
@@ -66,7 +68,7 @@ namespace FoxyOwl
         public int ObservationLength => _observationLength;
         public int CurrentIndex => _index - _startIndex;
         public bool CanGoBack => _index > _startIndex;
-        public bool IsLastStep => _index == MaximumRates - 2;
+        public bool IsLastStep => _index == MaximumRates;
         public int MaximumRates => _rates.Length - 1;
         public int Points => 100;
         public float MaximumReward => _maximumReward;
@@ -91,7 +93,6 @@ namespace FoxyOwl
 
                 _ = streamReader.ReadLine();
 
-                int i = 0;
                 while (!streamReader.EndOfStream)
                 {
                     rates.Add(new Rates(streamReader.ReadLine().Split(',')));
@@ -102,7 +103,7 @@ namespace FoxyOwl
 
             Reset();
         }
-        public Rates[] GetObservation()
+        public Rates[] GetObservation(bool moveForward=false)
         {
             List<Rates> observation = new List<Rates>();
 
@@ -110,6 +111,9 @@ namespace FoxyOwl
             {
                 observation.Add(_rates[i]);
             }
+
+            if (moveForward)
+                _index++;
 
             return observation.ToArray();
         }
@@ -225,8 +229,11 @@ namespace FoxyOwl
 
             return points;
         }
-        public void Reset()
+        public void Reset(int? startIndex=null)
         {
+            if (startIndex != null)
+                _startIndex = (int)startIndex;
+
             _epoch++;
             _accumulativeReward = 0;
             _index = _startIndex;
@@ -262,6 +269,11 @@ namespace FoxyOwl
             _index += increment;
 
             return IsLastStep;
+        }
+        public void SetIndex(int index)
+        {
+            if (index >= _observationLength - 1)
+                _index = index;
         }
     }
 }
