@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -17,32 +17,32 @@ namespace FoxyOwl
         public static event WriteToConsoleHandler WriteToConsole;
         #endregion
         static MLTrader _mlTrader;
-        public static void Export()
+        public static void ExportTrainingData()
         {
             _mlTrader = new MLTrader();
 
-            _mlTrader.SetIndex(400_000);
+            //_mlTrader.SetIndex(420_000);
 
-            using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\xauusd.DAT"))
+            using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step rates data.DAT"))
             {
                 StringBuilder states = new StringBuilder();
                 StringBuilder labels = new StringBuilder();
                 StringBuilder state = new StringBuilder();
                 StringBuilder json = new StringBuilder();
 
-                for (var x = 400_000; x < _mlTrader.MaximumRates - 25_000; x++)
+                for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
                 {
                     state = new StringBuilder();
                     var obs = _mlTrader.GetObservation(moveForward: true);
 
                     for (int i = 0; i < _mlTrader.ObservationLength; i++)
                     {
-                        state.Append($",[{obs[i].DateTimeString()}, {obs[i].Open},{obs[i].High},{obs[i].Low},{obs[i].Close}]");
+                        state.Append($",[{obs[i].Open},{obs[i].High},{obs[i].Low},{obs[i].Close}]");
                     }
 
                     states.Append($",[{state.ToString().TrimStart(',')}]");
 
-                    labels.Append($",[{_mlTrader.CurrentRates.High},{_mlTrader.CurrentRates.Low},{_mlTrader.CurrentRates.Close}]");
+                    labels.Append($",[{_mlTrader.CurrentRates.Open},{_mlTrader.CurrentRates.High},{_mlTrader.CurrentRates.Low},{_mlTrader.CurrentRates.Close}]");
                 }
 
                 json.Append($"{{\"states\":[{states.ToString().TrimStart(',')}],\"labels\":[{labels.ToString().TrimStart(',')}]}}");
@@ -50,13 +50,23 @@ namespace FoxyOwl
                 myWriter.Write(json.ToString());
             }
         }
+        public static void ExportRates(Rates[] rates, string filename = "step rates m3")
+        {
+            using (var myWriter = new StreamWriter($@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\{filename}.csv"))
+            {
+                for (var x = 0; x < rates.Length; x++)
+                {
+                    myWriter.WriteLine($"");
+                }
+            }
+        }
     }
     public class MLTrader
     {
         #region Private fields
         private Rates[] _rates;
-        private readonly int _observationLength = 240;
-        private int _startIndex = 239;
+        private readonly int _observationLength = 250;
+        private int _startIndex = 249;
         private int _index;
         private int _epoch = 0;
         private float _accumulativeReward = 0;
@@ -87,7 +97,7 @@ namespace FoxyOwl
         public static MLTrader Instance => _instance ?? (_instance = new MLTrader());
         public MLTrader()
         {
-            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\XAUUSD.csv"))
+            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step rates.csv"))
             {
                 List<Rates> rates = new List<Rates>();
 
@@ -121,7 +131,7 @@ namespace FoxyOwl
         {
             return default;
         }
-        public void OpenPosition(MarketOrderEnum marketOrder, int? stopLoss = null, bool isLive = false)
+        public void OpenPosition(MarketOrderEnum marketOrder, int? stopLoss = null)
         {
             try
             {
@@ -129,8 +139,10 @@ namespace FoxyOwl
                 {
                     PositionTime = new PositionTime(_rates[_index].Time),
                     MarketOrder = marketOrder,
-                    OpenPrice = _rates[_index].Open,
-                    StopLoss = stopLoss
+                    PriceOpen = _rates[_index].Open,
+                    StopLoss = stopLoss,
+                    PriceLow = _rates[_index].Low,
+                    PriceHigh = _rates[_index].High,
                 };
 
                 _openPositions.Add(position);
@@ -148,7 +160,10 @@ namespace FoxyOwl
             {
                 for (int i = 0; i < _openPositions.Count; i++)
                 {
-                    _openPositions[i].Profit = GetPoints(_openPositions[i].MarketOrder, _openPositions[i].OpenPrice, _rates[i].Close);
+                    _openPositions[i].Profit = GetPoints(_openPositions[i].MarketOrder, _openPositions[i].PriceOpen, _rates[_index].Close);
+
+                    _openPositions[i].PriceHigh = Math.Max(_rates[_index].High, _openPositions[i].PriceHigh);
+                    _openPositions[i].PriceLow = Math.Min(_rates[_index].Low, _openPositions[i].PriceLow);
 
                     if (_openPositions[i].StopLoss.HasValue)
                         if (_openPositions[i].Profit < -_openPositions[i].StopLoss)
@@ -166,7 +181,7 @@ namespace FoxyOwl
             {
                 var position = _openPositions[index];
 
-                position.ClosePrice = _rates[_index].Close;
+                position.PriceClose = _rates[_index].Close;
                 position.PositionTime.Close = Convert.ToDateTime(_rates[_index].Time);
 
                 AddReward(position.Profit);
@@ -237,6 +252,9 @@ namespace FoxyOwl
             _epoch++;
             _accumulativeReward = 0;
             _index = _startIndex;
+
+            _openPositions.Clear();
+            _closedPositions.Clear();
         }
         public string GetReport()
         {

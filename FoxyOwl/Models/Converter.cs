@@ -145,4 +145,63 @@ namespace FoxyOwl.Converters
             return Color.Purple;
         }
     }
+    public static class CandleConvert
+    {
+        public static Rates[] ToResolution(Rates[] rates, Resolution resolution)
+        {
+            try
+            {
+                int i = 0;
+                while (rates[i].Time.Minute % (int)resolution > 0)
+                    i++;
+
+                List<Rates> results = new List<Rates>();
+
+                Rates currentRates = new Rates()
+                {
+                    Time = rates[0].Time,
+                    Open = rates[0].Open,
+                    Low = rates[0].Low,
+                };
+
+                DateTime time = rates[0].Time.AddMinutes((int)resolution);
+
+                for (; i < rates.Length; i++)
+                {
+                    if (rates[i].Time >= time)
+                    {
+                        currentRates.Close = rates[i - 1].Close;
+                        results.Add(currentRates);
+
+                        currentRates = new Rates()
+                        {
+                            Time = rates[i].Time,
+                            Open = rates[i].Open,
+                            Low = rates[i].Low,
+                        };
+
+                        time = time.AddMinutes((int)resolution);
+                    }
+
+                    if (rates[i].High > currentRates.High)
+                        currentRates.High = rates[i].High;
+                    if (rates[i].Low < currentRates.Low)
+                        currentRates.Low = rates[i].Low;
+                }
+
+                return results.ToArray();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
+    public static class MacdConvert
+    {
+        //public static Color ToMacd(TextColourEnum textColour)
+        //{
+            
+        //}
+    }
 }

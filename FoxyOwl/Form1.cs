@@ -32,7 +32,7 @@ namespace FoxyOwl
         private Rates[] _rates = null;
         private int _numChartCandles = 220;
 
-        private Timer CandleTimer = null;
+        private Timer _timer = null;
         private Timer CurrentCandleTimer = null;
         private bool _isCandleTimerSynced = false;
         private bool _isCurrentCandleTimerSynced = false;
@@ -122,6 +122,22 @@ namespace FoxyOwl
         #endregion
 
         #region Custom methods
+        private void GetTrainingLabels()
+        {
+            try
+            {
+                MLTrader.Instance.Reset();
+
+                while(!MLTrader.Instance.IsLastStep)
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
         private int XPoint;
         private void LoadChart(Rates[] candlesticks)
         {
@@ -186,7 +202,7 @@ namespace FoxyOwl
 
                 for (int i = 0; i < positionsOpen.Count; i++)
                 {
-                    yPoint = ChartConvert.ToRelativeValue((int)Math.Floor((maxHeight - positionsOpen[i].OpenPrice) * points), maxPoints, chartPanel.Height);
+                    yPoint = ChartConvert.ToRelativeValue((int)Math.Floor((maxHeight - positionsOpen[i].PriceOpen) * points), maxPoints, chartPanel.Height);
                     positionsGraphics.DrawLine(new Pen(Color.Green, 1) { DashStyle = DashStyle.Dash }, new Point(0, y: yPoint), new Point(chartPanel.Width, yPoint));
                 }
             }
@@ -204,6 +220,8 @@ namespace FoxyOwl
             {
                 MLTrader.Print += MLTrader_Print;
                 _rates = MLTrader.Instance.GetObservation();
+
+                //_timer = new Timer();
 
                 LoadChart(_rates);
             }
