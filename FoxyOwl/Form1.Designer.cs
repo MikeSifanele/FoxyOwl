@@ -46,6 +46,7 @@ namespace FoxyOwl
             this.chartPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.lbOutput = new System.Windows.Forms.ListBox();
+            this.labelAccount = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -165,6 +166,7 @@ namespace FoxyOwl
             this.btnForward.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnForward.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnForward.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnForward.Location = new System.Drawing.Point(187, 4);
             this.btnForward.Margin = new System.Windows.Forms.Padding(4);
@@ -251,6 +253,7 @@ namespace FoxyOwl
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel3.Controls.Add(this.lblTitle, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.labelAccount, 2, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -258,6 +261,7 @@ namespace FoxyOwl
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(1530, 41);
             this.tableLayoutPanel3.TabIndex = 1;
+            this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
             // lblTitle
             // 
@@ -318,6 +322,17 @@ namespace FoxyOwl
             this.lbOutput.TabIndex = 0;
             this.lbOutput.TabStop = false;
             // 
+            // labelAccount
+            // 
+            this.labelAccount.AutoSize = true;
+            this.labelAccount.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.labelAccount.Font = new System.Drawing.Font("Segoe Script", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAccount.Location = new System.Drawing.Point(1023, 14);
+            this.labelAccount.Name = "labelAccount";
+            this.labelAccount.Size = new System.Drawing.Size(504, 27);
+            this.labelAccount.TabIndex = 1;
+            this.labelAccount.Text = "Balance: ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -360,6 +375,7 @@ namespace FoxyOwl
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.CheckBox cbCloseOppositeTrade;
         private System.Windows.Forms.CheckBox cbAutoTrade;
+        private System.Windows.Forms.Label labelAccount;
     }
 }
 
