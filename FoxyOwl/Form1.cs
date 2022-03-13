@@ -51,7 +51,7 @@ namespace FoxyOwl
         {
             InitializeComponent();
 
-            //DataExport.Export();
+            DataExport.ExportTrainingData();
         }
 
         #region Navigation events

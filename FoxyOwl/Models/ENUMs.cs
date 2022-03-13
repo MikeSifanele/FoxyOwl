@@ -37,4 +37,12 @@ namespace FoxyOwl.Models
         Error,
         Info,
     }
+    public enum MacdColour
+    {
+        DimGray = 0,
+        LimeGreen = 1,
+        Green = 2,
+        Red = 3,
+        Firebrick = 4
+    }
 }

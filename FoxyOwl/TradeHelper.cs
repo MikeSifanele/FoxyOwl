@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FoxyOwl.Converters;
 using FoxyOwl.Models;
+using FoxyOwl.Indicators;
 
 namespace FoxyOwl
 {
@@ -21,9 +23,9 @@ namespace FoxyOwl
         {
             _mlTrader = new MLTrader();
 
-            //_mlTrader.SetIndex(420_000);
+            _mlTrader.SetIndex(100);
 
-            using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step rates data.DAT"))
+            using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step macds data.DAT"))
             {
                 StringBuilder states = new StringBuilder();
                 StringBuilder labels = new StringBuilder();
@@ -37,12 +39,12 @@ namespace FoxyOwl
 
                     for (int i = 0; i < _mlTrader.ObservationLength; i++)
                     {
-                        state.Append($",[{obs[i].Open},{obs[i].High},{obs[i].Low},{obs[i].Close}]");
+                        state.Append($",[{obs[i].High},{obs[i].Low},{obs[i].Close}]");
                     }
 
                     states.Append($",[{state.ToString().TrimStart(',')}]");
 
-                    labels.Append($",[{_mlTrader.CurrentRates.Open},{_mlTrader.CurrentRates.High},{_mlTrader.CurrentRates.Low},{_mlTrader.CurrentRates.Close}]");
+                    labels.Append($",[{_mlTrader.CurrentMacdColour}]");
                 }
 
                 json.Append($"{{\"states\":[{states.ToString().TrimStart(',')}],\"labels\":[{labels.ToString().TrimStart(',')}]}}");
@@ -65,6 +67,7 @@ namespace FoxyOwl
     {
         #region Private fields
         private Rates[] _rates;
+        private Macds[] _macds;
         private readonly int _observationLength = 250;
         private int _startIndex = 249;
         private int _index;
@@ -79,12 +82,13 @@ namespace FoxyOwl
         public int CurrentIndex => _index - _startIndex;
         public bool CanGoBack => _index > _startIndex;
         public bool IsLastStep => _index == MaximumRates;
-        public int MaximumRates => _rates.Length - 1;
+        public int MaximumRates => _rates.Length - 5;
         public int Points => 100;
         public float MaximumReward => _maximumReward;
         public float AccumulativeReward => _accumulativeReward;
         public Rates PreviousRates => _rates[_index - 1];
         public Rates CurrentRates => _rates[_index];
+        public int CurrentMacdColour => Macd.CalculateCandleColour(_macds[_index-1].Close, _macds[_index].Close);
         public Rates FutureRates => _rates[_index + 1];
         public List<Position> OpenPositions => _openPositions;
         public List<Position> ClosedPositions => _closedPositions;
@@ -99,7 +103,7 @@ namespace FoxyOwl
         {
             using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step rates.csv"))
             {
-                List<Rates> rates = new List<Rates>();
+                var rates = new List<Rates>();
 
                 _ = streamReader.ReadLine();
 
@@ -109,17 +113,29 @@ namespace FoxyOwl
                 }
 
                 _rates = rates.ToArray();
+                _macds = ObservationConvert.ToMacds(rates.ToArray());
             }
 
             Reset();
         }
-        public Rates[] GetObservation(bool moveForward=false)
+        public Rates[] GetObservation()
         {
-            List<Rates> observation = new List<Rates>();
+            var observation = new List<Rates>();
 
             for (int i = _index - (_observationLength - 1); i <= _index; i++)
             {
                 observation.Add(_rates[i]);
+            }
+
+            return observation.ToArray();
+        }
+        public Macds[] GetObservation(bool moveForward=false)
+        {
+            var observation = new List<Macds>();
+
+            for (int i = _index - (_observationLength - 1); i <= _index; i++)
+            {
+                observation.Add(_macds[i]);
             }
 
             if (moveForward)
@@ -292,6 +308,35 @@ namespace FoxyOwl
         {
             if (index >= _observationLength - 1)
                 _index = index;
+        }
+        public float[] GetHighLow()
+        {
+            try
+            {
+                float[] highLow = new float[] { _rates[_index].High , _rates[_index].Low };
+
+                int i = 1;
+                while (!IsLastStep)
+                {
+                    if(highLow[0] < _rates[_index + i].Close)
+                    {
+                        highLow[0] = _rates[_index + i].Close;
+                    }
+
+                    if(highLow[1] > _rates[_index + i].Close)
+                    {
+                        highLow[1] = _rates[_index + i].Close;
+                    }
+
+                    i++;
+                }
+
+                return default;
+            }
+            catch (Exception)
+            {
+                return default;
+            }
         }
     }
 }

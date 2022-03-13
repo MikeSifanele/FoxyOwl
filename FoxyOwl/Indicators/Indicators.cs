@@ -14,6 +14,9 @@ namespace FoxyOwl.Indicators
         {
             try
             {
+                if(previousEma == 0)
+                    return close;
+
                 float alpha = (float)(2.0 / (1.0 + period));
 
                 return previousEma + alpha * (close - previousEma);
@@ -32,6 +35,32 @@ namespace FoxyOwl.Indicators
             catch (Exception)
             {
                 return 0f;
+            }
+        }
+        public static int CalculateCandleColour(float prevMacd, float currMacd)
+        {
+            try
+            {
+                if (currMacd > 0)
+                {
+                    if (currMacd > prevMacd)
+                        return (int)MacdColour.LimeGreen;
+                    if (currMacd < prevMacd)
+                        return (int)MacdColour.Green;
+                }
+                else if (currMacd < 0)
+                {
+                    if (currMacd < prevMacd)
+                        return (int)MacdColour.Red;
+                    if (currMacd > prevMacd)
+                        return (int)MacdColour.Firebrick;
+                }
+
+                return (int)MacdColour.DimGray;
+            }
+            catch (Exception)
+            {
+                return (int)MacdColour.DimGray;
             }
         }
     }

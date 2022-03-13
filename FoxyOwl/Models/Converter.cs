@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Python.Runtime;
 using FoxyOwl.Models;
+using FoxyOwl.Indicators;
 using System.Drawing;
 
 namespace FoxyOwl.Converters
@@ -197,11 +198,48 @@ namespace FoxyOwl.Converters
             }
         }
     }
-    public static class MacdConvert
+    public static class ObservationConvert
     {
-        //public static Color ToMacd(TextColourEnum textColour)
-        //{
-            
-        //}
+        public static Macds[] ToMacds(Rates[] rates)
+        {
+            try
+            {                
+                Macds macds = new Macds();
+                List<Macds> results = new List<Macds>();
+
+                float FastCloseEma = 0;
+                float SlowCloseEma = 0;
+                float FastHighEma = 0;
+                float SlowHighEma = 0;
+                float FastLowEma = 0;
+                float SlowLowEma = 0;
+
+                for (var i = 0; i < rates.Length; i++)
+                {
+                    FastCloseEma = Macd.CalculateEMA(rates[i].Close, FastCloseEma, (int)EmaPeriod.Fast);
+                    SlowCloseEma = Macd.CalculateEMA(rates[i].Close, SlowCloseEma, (int)EmaPeriod.Slow);
+
+                    macds.Close = Macd.CalculateMacd(FastCloseEma, SlowCloseEma);
+
+                    FastHighEma = Macd.CalculateEMA(rates[i].High, FastHighEma, (int)EmaPeriod.Fast);
+                    SlowHighEma = Macd.CalculateEMA(rates[i].High, SlowHighEma, (int)EmaPeriod.Slow);
+
+                    macds.High = Macd.CalculateMacd(FastHighEma, SlowHighEma);
+
+                    FastLowEma = Macd.CalculateEMA(rates[i].Low, FastLowEma, (int)EmaPeriod.Fast);
+                    SlowLowEma = Macd.CalculateEMA(rates[i].Low, SlowLowEma, (int)EmaPeriod.Slow);
+
+                    macds.Low = Macd.CalculateMacd(FastLowEma, SlowLowEma);
+
+                    results.Add(macds);
+                }
+
+                return results.ToArray();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }
