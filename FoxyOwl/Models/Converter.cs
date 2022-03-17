@@ -33,6 +33,20 @@ namespace FoxyOwl.Converters
         {
             return (int)PyInt.AsInt(value) == 1;
         }
+        public static float[] ToFloatArray(dynamic value, float? extra = null)
+        {
+            var valueLength = ToInt(value.shape[1]);
+            var result = new float[extra.HasValue ? valueLength + 1 : valueLength];
+
+            int i = 0;
+            for (; i < valueLength; i++)
+                result[i] = PyFloat.AsFloat(value[0][i]);
+
+            if (extra.HasValue)
+                result[i] = extra.Value;
+
+            return result;
+        }
         public static Rates ToMqlRates(dynamic value)
         {
             try
@@ -203,7 +217,7 @@ namespace FoxyOwl.Converters
         public static Macds[] ToMacds(Rates[] rates)
         {
             try
-            {                
+            {
                 Macds macds = new Macds();
                 List<Macds> results = new List<Macds>();
 

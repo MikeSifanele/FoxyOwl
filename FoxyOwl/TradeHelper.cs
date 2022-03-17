@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FoxyOwl.Converters;
 using FoxyOwl.Models;
 using FoxyOwl.Indicators;
+using Python.Runtime;
 
 namespace FoxyOwl
 {
@@ -21,35 +22,61 @@ namespace FoxyOwl
         static MLTrader _mlTrader;
         public static void ExportTrainingData()
         {
-            _mlTrader = new MLTrader();
+            Runtime.PythonDLL = @"C:\Python\37\python37.dll";          
 
-            _mlTrader.SetIndex(100);
-
-            using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step macds data.DAT"))
+            using (Py.GIL())
             {
-                StringBuilder states = new StringBuilder();
-                StringBuilder labels = new StringBuilder();
-                StringBuilder state = new StringBuilder();
-                StringBuilder json = new StringBuilder();
-
-                for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
+                try
                 {
-                    state = new StringBuilder();
-                    var obs = _mlTrader.GetObservation(moveForward: true);
+                    var rollingState = new RollingWindow(10);
 
-                    for (int i = 0; i < _mlTrader.ObservationLength; i++)
+                    dynamic np = Py.Import("numpy");
+
+                    dynamic tensorflow = Py.Import("tensorflow");
+
+                    dynamic model = tensorflow?.keras?.models?.load_model(@"C:\python-repos\step-model-2");
+
+                    _mlTrader = new MLTrader();
+
+                    _mlTrader.SetIndex(251);
+
+                    using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step super data.DAT"))
                     {
-                        state.Append($",[{obs[i].High},{obs[i].Low},{obs[i].Close}]");
+                        StringBuilder states = new StringBuilder();
+                        StringBuilder labels = new StringBuilder();
+                        StringBuilder json = new StringBuilder();
+
+                        var state = new List<float[]>();
+                        Macds[] obs;
+
+                        for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
+                        {
+                            state = new List<float[]>();
+                            obs = _mlTrader.GetObservation(moveForward: true);
+
+                            for (int i = 0; i < _mlTrader.ObservationLength; i++)
+                            {
+                                state.Add(new float[]{obs[i].High, obs[i].Low, obs[i].Close});
+                            }
+
+                            rollingState.Append(PyConvert.ToFloatArray(model.predict(np.asarray(np.expand_dims(state, axis: 0), np.float32)), obs[obs.Length - 1].Close));
+
+                            if(x >= rollingState.Length)
+                            {
+                                states.Append($"{rollingState},");
+                                labels.Append($"[{_mlTrader.CurrentMacdColour}],");
+                            }
+                        }
+
+                        json.Append($"{{\"states\":[{states.ToString().TrimEnd(',')}],\"labels\":[{labels.ToString().TrimEnd(',')}]}}");
+
+                        myWriter.Write(json.ToString());
                     }
-
-                    states.Append($",[{state.ToString().TrimStart(',')}]");
-
-                    labels.Append($",[{_mlTrader.CurrentMacdColour}]");
                 }
+                catch (Exception)
+                {
 
-                json.Append($"{{\"states\":[{states.ToString().TrimStart(',')}],\"labels\":[{labels.ToString().TrimStart(',')}]}}");
-
-                myWriter.Write(json.ToString());
+                }
             }
         }
         public static void ExportRates(Rates[] rates, string filename = "step rates m3")
@@ -101,7 +128,7 @@ namespace FoxyOwl
         public static MLTrader Instance => _instance ?? (_instance = new MLTrader());
         public MLTrader()
         {
-            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step rates.csv"))
+            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\Step Index M1.csv"))
             {
                 var rates = new List<Rates>();
 
@@ -109,7 +136,10 @@ namespace FoxyOwl
 
                 while (!streamReader.EndOfStream)
                 {
-                    rates.Add(new Rates(streamReader.ReadLine().Split(',')));
+                    if (rates.Count > 2 && rates[rates.Count - 2].Time.AddMinutes(1) != rates[rates.Count - 1].Time)
+                        break;
+
+                    rates.Add(new Rates(streamReader.ReadLine().Split('\t')));
                 }
 
                 _rates = rates.ToArray();

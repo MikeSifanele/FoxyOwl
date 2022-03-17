@@ -55,12 +55,12 @@ namespace FoxyOwl.Models
         public float Close;
         public Rates(string[] data)
         {
-            Time = Convert.ToDateTime(data[0]);
+            Time = Convert.ToDateTime($"{data[0]} {data[1]}");
 
-            Open = float.Parse(data[1], CultureInfo.InvariantCulture.NumberFormat);
-            High = float.Parse(data[2], CultureInfo.InvariantCulture.NumberFormat);
-            Low = float.Parse(data[3], CultureInfo.InvariantCulture.NumberFormat);
-            Close = float.Parse(data[4], CultureInfo.InvariantCulture.NumberFormat);
+            Open = float.Parse(data[2], CultureInfo.InvariantCulture.NumberFormat);
+            High = float.Parse(data[3], CultureInfo.InvariantCulture.NumberFormat);
+            Low = float.Parse(data[4], CultureInfo.InvariantCulture.NumberFormat);
+            Close = float.Parse(data[5], CultureInfo.InvariantCulture.NumberFormat);
         }
         public float[] ToFloatArray()
         {
