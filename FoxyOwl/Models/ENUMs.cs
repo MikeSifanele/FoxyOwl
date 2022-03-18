@@ -43,6 +43,7 @@ namespace FoxyOwl.Models
         LimeGreen = 1,
         Green = 2,
         Red = 3,
-        Firebrick = 4
+        Firebrick = 4,
+        Count
     }
 }

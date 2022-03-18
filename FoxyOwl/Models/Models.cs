@@ -73,12 +73,14 @@ namespace FoxyOwl.Models
     }
     public struct Macds
     {
+        public float Open;
         public float High;
         public float Low;
         public float Close;
+        public float Sentiment;
         public float[] ToFloatArray()
         {
-            return new float[] { High, Low, Close };
+            return new float[] { Open, High, Low, Close, Sentiment };
         }
     }
     public class TradePosition

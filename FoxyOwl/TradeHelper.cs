@@ -22,62 +22,45 @@ namespace FoxyOwl
         static MLTrader _mlTrader;
         public static void ExportTrainingData()
         {
-            Runtime.PythonDLL = @"C:\Python\37\python37.dll";          
+            //Runtime.PythonDLL = @"C:\Python\37\python37.dll";          
 
-            using (Py.GIL())
+            //using (Py.GIL())
+            //{
+            try
             {
-                try
+                //dynamic np = Py.Import("numpy");
+                //dynamic tensorflow = Py.Import("tensorflow");
+                //dynamic model = tensorflow?.keras?.models?.load_model(@"C:\python-repos\step-model-2");
+
+                RollingWindow rollingState;
+                _mlTrader = new MLTrader();
+
+                using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step super data.DAT"))
                 {
-                    var rollingState = new RollingWindow(10);
+                    StringBuilder states = new StringBuilder();
+                    StringBuilder labels = new StringBuilder();
+                    StringBuilder json = new StringBuilder();
 
-                    dynamic np = Py.Import("numpy");
+                    var state = new List<float[]>();
 
-                    dynamic tensorflow = Py.Import("tensorflow");
-
-                    dynamic model = tensorflow?.keras?.models?.load_model(@"C:\python-repos\step-model-2");
-
-                    _mlTrader = new MLTrader();
-
-                    _mlTrader.SetIndex(251);
-
-                    using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step super data.DAT"))
+                    for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
                     {
-                        StringBuilder states = new StringBuilder();
-                        StringBuilder labels = new StringBuilder();
-                        StringBuilder json = new StringBuilder();
+                        rollingState = _mlTrader.GetObservation(moveForward: true);
 
-                        var state = new List<float[]>();
-                        Macds[] obs;
-
-                        for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
-                        {
-                            state = new List<float[]>();
-                            obs = _mlTrader.GetObservation(moveForward: true);
-
-                            for (int i = 0; i < _mlTrader.ObservationLength; i++)
-                            {
-                                state.Add(new float[]{obs[i].High, obs[i].Low, obs[i].Close});
-                            }
-
-                            rollingState.Append(PyConvert.ToFloatArray(model.predict(np.asarray(np.expand_dims(state, axis: 0), np.float32)), obs[obs.Length - 1].Close));
-
-                            if(x >= rollingState.Length)
-                            {
-                                states.Append($"{rollingState},");
-                                labels.Append($"[{_mlTrader.CurrentMacdColour}],");
-                            }
-                        }
-
-                        json.Append($"{{\"states\":[{states.ToString().TrimEnd(',')}],\"labels\":[{labels.ToString().TrimEnd(',')}]}}");
-
-                        myWriter.Write(json.ToString());
+                        states.Append($"{rollingState},");
+                        labels.Append($"[{_mlTrader.CurrentMacdColour}],");
                     }
-                }
-                catch (Exception)
-                {
 
+                    json.Append($"{{\"states\":[{states.ToString().TrimEnd(',')}],\"labels\":[{labels.ToString().TrimEnd(',')}]}}");
+
+                    myWriter.Write(json.ToString());
                 }
             }
+            catch (Exception ex)
+            {
+                WriteToConsole?.Invoke(ex.Message, Color.Red);
+            }
+            //}
         }
         public static void ExportRates(Rates[] rates, string filename = "step rates m3")
         {
@@ -95,8 +78,8 @@ namespace FoxyOwl
         #region Private fields
         private Rates[] _rates;
         private Macds[] _macds;
-        private readonly int _observationLength = 250;
-        private int _startIndex = 249;
+        private readonly int _observationLength = 180;
+        private int _startIndex = 179;
         private int _index;
         private int _epoch = 0;
         private float _accumulativeReward = 0;
@@ -115,8 +98,9 @@ namespace FoxyOwl
         public float AccumulativeReward => _accumulativeReward;
         public Rates PreviousRates => _rates[_index - 1];
         public Rates CurrentRates => _rates[_index];
-        public int CurrentMacdColour => Macd.CalculateCandleColour(_macds[_index-1].Close, _macds[_index].Close);
+        public int CurrentMacdColour => Macd.CalculateCandleColour(_macds[_index - 1].Close, _macds[_index].Close);
         public Rates FutureRates => _rates[_index + 1];
+        public RollingWindow RollingMacds;
         public List<Position> OpenPositions => _openPositions;
         public List<Position> ClosedPositions => _closedPositions;
         #endregion
@@ -126,7 +110,7 @@ namespace FoxyOwl
         #endregion
         private static MLTrader _instance;
         public static MLTrader Instance => _instance ?? (_instance = new MLTrader());
-        public MLTrader()
+        public MLTrader(int startIndex = 182)
         {
             using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\Step Index M1.csv"))
             {
@@ -144,9 +128,21 @@ namespace FoxyOwl
 
                 _rates = rates.ToArray();
                 _macds = ObservationConvert.ToMacds(rates.ToArray());
+
+                SetIndex(startIndex);
+                WarmUpRollingWindows();
             }
 
             Reset();
+        }
+        public void WarmUpRollingWindows()
+        {
+            RollingMacds = new RollingWindow(ObservationLength);
+
+            for (int i = 0; i <= RollingMacds.Length; i++)
+            {
+                RollingMacds.Append(_macds[i].ToFloatArray());
+            }
         }
         public Rates[] GetObservation()
         {
@@ -159,19 +155,14 @@ namespace FoxyOwl
 
             return observation.ToArray();
         }
-        public Macds[] GetObservation(bool moveForward=false)
+        public RollingWindow GetObservation(bool moveForward = false)
         {
-            var observation = new List<Macds>();
-
-            for (int i = _index - (_observationLength - 1); i <= _index; i++)
-            {
-                observation.Add(_macds[i]);
-            }
+            var observation = RollingMacds;
 
             if (moveForward)
                 _index++;
 
-            return observation.ToArray();
+            return observation;
         }
         public ExpertAction GetExpertAction()
         {
@@ -235,7 +226,7 @@ namespace FoxyOwl
                 _openPositions.RemoveAt(index);
                 _closedPositions.Add(position);
 
-                Print?.Invoke($"Closed position, Open time: {position.PositionTime.Open}, Close time: {position.PositionTime.Close}, Profit: ${FormatNumber(position.Profit)}, Accumulatice reward: ${FormatNumber(_accumulativeReward)}", position.Profit > 0? TextColourEnum.Success: TextColourEnum.Error);
+                Print?.Invoke($"Closed position, Open time: {position.PositionTime.Open}, Close time: {position.PositionTime.Close}, Profit: ${FormatNumber(position.Profit)}, Accumulatice reward: ${FormatNumber(_accumulativeReward)}", position.Profit > 0 ? TextColourEnum.Success : TextColourEnum.Error);
             }
             catch (Exception)
             {
@@ -290,7 +281,7 @@ namespace FoxyOwl
 
             return points;
         }
-        public void Reset(int? startIndex=null)
+        public void Reset(int? startIndex = null)
         {
             if (startIndex != null)
                 _startIndex = (int)startIndex;
@@ -343,17 +334,17 @@ namespace FoxyOwl
         {
             try
             {
-                float[] highLow = new float[] { _rates[_index].High , _rates[_index].Low };
+                float[] highLow = new float[] { _rates[_index].High, _rates[_index].Low };
 
                 int i = 1;
                 while (!IsLastStep)
                 {
-                    if(highLow[0] < _rates[_index + i].Close)
+                    if (highLow[0] < _rates[_index + i].Close)
                     {
                         highLow[0] = _rates[_index + i].Close;
                     }
 
-                    if(highLow[1] > _rates[_index + i].Close)
+                    if (highLow[1] > _rates[_index + i].Close)
                     {
                         highLow[1] = _rates[_index + i].Close;
                     }

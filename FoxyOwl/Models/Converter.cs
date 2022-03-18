@@ -33,6 +33,20 @@ namespace FoxyOwl.Converters
         {
             return (int)PyInt.AsInt(value) == 1;
         }
+        public static float[] ToFloatArray(dynamic value, float[] extras = null)
+        {
+            var valueLength = ToInt(value.shape[1]);
+            var results = new float[extras == null ? valueLength : valueLength + extras?.Length];
+
+            int i = 0;
+            for (; i < valueLength; i++)
+                results[i] = PyFloat.AsFloat(value[0][i]);
+
+            for (var j = 0; j < extras.Length; j++)
+                results[i++] = extras[j];
+
+            return results;
+        }
         public static float[] ToFloatArray(dynamic value, float? extra = null)
         {
             var valueLength = ToInt(value.shape[1]);
@@ -228,7 +242,24 @@ namespace FoxyOwl.Converters
                 float FastLowEma = 0;
                 float SlowLowEma = 0;
 
-                for (var i = 0; i < rates.Length; i++)
+                FastCloseEma = Macd.CalculateEMA(rates[0].Close, FastCloseEma, (int)EmaPeriod.Fast);
+                SlowCloseEma = Macd.CalculateEMA(rates[0].Close, SlowCloseEma, (int)EmaPeriod.Slow);
+
+                macds.Close = Macd.CalculateMacd(FastCloseEma, SlowCloseEma);
+
+                FastHighEma = Macd.CalculateEMA(rates[0].High, FastHighEma, (int)EmaPeriod.Fast);
+                SlowHighEma = Macd.CalculateEMA(rates[0].High, SlowHighEma, (int)EmaPeriod.Slow);
+
+                macds.High = Macd.CalculateMacd(FastHighEma, SlowHighEma);
+
+                FastLowEma = Macd.CalculateEMA(rates[0].Low, FastLowEma, (int)EmaPeriod.Fast);
+                SlowLowEma = Macd.CalculateEMA(rates[0].Low, SlowLowEma, (int)EmaPeriod.Slow);
+
+                macds.Low = Macd.CalculateMacd(FastLowEma, SlowLowEma);
+
+                results.Add(macds);
+
+                for (var i = 1; i < rates.Length; i++)
                 {
                     FastCloseEma = Macd.CalculateEMA(rates[i].Close, FastCloseEma, (int)EmaPeriod.Fast);
                     SlowCloseEma = Macd.CalculateEMA(rates[i].Close, SlowCloseEma, (int)EmaPeriod.Slow);
@@ -244,6 +275,8 @@ namespace FoxyOwl.Converters
                     SlowLowEma = Macd.CalculateEMA(rates[i].Low, SlowLowEma, (int)EmaPeriod.Slow);
 
                     macds.Low = Macd.CalculateMacd(FastLowEma, SlowLowEma);
+
+                    macds.Sentiment = (float)Macd.CalculateCandleColour(results[i - 1].Close, macds.Close) / (int)MacdColour.Count;
 
                     results.Add(macds);
                 }
