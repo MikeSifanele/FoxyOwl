@@ -235,32 +235,16 @@ namespace FoxyOwl.Converters
                 Macds macds = new Macds();
                 List<Macds> results = new List<Macds>();
 
-                float FastCloseEma = 0;
-                float SlowCloseEma = 0;
-                float FastHighEma = 0;
-                float SlowHighEma = 0;
-                float FastLowEma = 0;
-                float SlowLowEma = 0;
+                float FastOpenEma = 0, FastCloseEma = 0, FastHighEma = 0, FastLowEma = 0;
+                float SlowOpenEma = 0, SlowCloseEma = 0, SlowHighEma = 0, SlowLowEma = 0;
 
-                FastCloseEma = Macd.CalculateEMA(rates[0].Close, FastCloseEma, (int)EmaPeriod.Fast);
-                SlowCloseEma = Macd.CalculateEMA(rates[0].Close, SlowCloseEma, (int)EmaPeriod.Slow);
-
-                macds.Close = Macd.CalculateMacd(FastCloseEma, SlowCloseEma);
-
-                FastHighEma = Macd.CalculateEMA(rates[0].High, FastHighEma, (int)EmaPeriod.Fast);
-                SlowHighEma = Macd.CalculateEMA(rates[0].High, SlowHighEma, (int)EmaPeriod.Slow);
-
-                macds.High = Macd.CalculateMacd(FastHighEma, SlowHighEma);
-
-                FastLowEma = Macd.CalculateEMA(rates[0].Low, FastLowEma, (int)EmaPeriod.Fast);
-                SlowLowEma = Macd.CalculateEMA(rates[0].Low, SlowLowEma, (int)EmaPeriod.Slow);
-
-                macds.Low = Macd.CalculateMacd(FastLowEma, SlowLowEma);
-
-                results.Add(macds);
-
-                for (var i = 1; i < rates.Length; i++)
+                for (var i = 0; i < rates.Length; i++)
                 {
+                    FastOpenEma = Macd.CalculateEMA(rates[i].Open, FastOpenEma, (int)EmaPeriod.Fast);
+                    SlowOpenEma = Macd.CalculateEMA(rates[i].Open, SlowOpenEma, (int)EmaPeriod.Slow);
+
+                    macds.Open = Macd.CalculateMacd(FastOpenEma, SlowOpenEma);
+
                     FastCloseEma = Macd.CalculateEMA(rates[i].Close, FastCloseEma, (int)EmaPeriod.Fast);
                     SlowCloseEma = Macd.CalculateEMA(rates[i].Close, SlowCloseEma, (int)EmaPeriod.Slow);
 
