@@ -38,9 +38,9 @@ namespace FoxyOwl.Models
                 rowResults = string.Empty;
 
                 for (int c = 0; c < Window[0].Length; c++)
-                    rowResults += $",{Window[r][c]}";
+                    rowResults += $"{Window[r][c]},";
 
-                results += $"[{rowResults.TrimStart(',')}],";
+                results += $"[{rowResults.TrimEnd(',')}],";
             }
 
             return $"[{results.TrimEnd(',')}]";
