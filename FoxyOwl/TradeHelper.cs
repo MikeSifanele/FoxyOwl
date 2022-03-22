@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -157,12 +157,9 @@ namespace FoxyOwl
         }
         public RollingWindow GetObservation(bool moveForward = false)
         {
-            var observation = RollingMacds;
+            _ = RollingMacds.Append(_macds[moveForward ? _index++ : _index].ToFloatArray());
 
-            if (moveForward)
-                _index++;
-
-            return observation;
+            return RollingMacds;
         }
         public ExpertAction GetExpertAction()
         {
