@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -32,7 +32,6 @@ namespace FoxyOwl
                 //dynamic tensorflow = Py.Import("tensorflow");
                 //dynamic model = tensorflow?.keras?.models?.load_model(@"C:\python-repos\step-model-2");
 
-                RollingWindow rollingState;
                 _mlTrader = new MLTrader();
 
                 using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step super data.DAT"))
@@ -41,13 +40,9 @@ namespace FoxyOwl
                     StringBuilder labels = new StringBuilder();
                     StringBuilder json = new StringBuilder();
 
-                    var state = new List<float[]>();
-
                     for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
                     {
-                        rollingState = _mlTrader.GetObservation(moveForward: true);
-
-                        states.Append($"{rollingState},");
+                        states.Append($"{_mlTrader.GetObservation(moveForward: true)},");
                         labels.Append($"[{_mlTrader.CurrentMacdColour}],");
                     }
 
@@ -141,7 +136,7 @@ namespace FoxyOwl
 
             for (int i = 0; i <= RollingMacds.Length; i++)
             {
-                RollingMacds.Append(_macds[i].ToFloatArray());
+                _ = RollingMacds.Append(_macds[i].ToFloatArray());
             }
         }
         public Rates[] GetObservation()
