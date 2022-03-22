@@ -42,7 +42,7 @@ namespace FoxyOwl
 
                     for (var x = 0; x < _mlTrader.MaximumRates && !_mlTrader.IsLastStep; x++)
                     {
-                        states.Append($"{_mlTrader.GetObservation(moveForward: true)},");
+                        states.Append($"{_mlTrader.GetMacdObservation(moveForward: true)},");
                         labels.Append($"[{_mlTrader.CurrentMacdColour}],");
                     }
 
@@ -96,6 +96,7 @@ namespace FoxyOwl
         public int CurrentMacdColour => Macd.CalculateCandleColour(_macds[_index - 1].Close, _macds[_index].Close);
         public Rates FutureRates => _rates[_index + 1];
         public RollingWindow RollingMacds;
+        public RollingWindow RollingRates;
         public List<Position> OpenPositions => _openPositions;
         public List<Position> ClosedPositions => _closedPositions;
         #endregion
@@ -116,7 +117,10 @@ namespace FoxyOwl
                 while (!streamReader.EndOfStream)
                 {
                     if (rates.Count > 2 && rates[rates.Count - 2].Time.AddMinutes(1) != rates[rates.Count - 1].Time)
+                    {
+                        rates = new List<Rates>();
                         break;
+                    }
 
                     rates.Add(new Rates(streamReader.ReadLine().Split('\t')));
                 }
@@ -133,24 +137,21 @@ namespace FoxyOwl
         public void WarmUpRollingWindows()
         {
             RollingMacds = new RollingWindow(ObservationLength);
+            RollingRates = new RollingWindow(ObservationLength);
 
             for (int i = 0; i <= RollingMacds.Length; i++)
             {
                 _ = RollingMacds.Append(_macds[i].ToFloatArray());
+                _ = RollingRates.Append(_rates[i].ToFloatArray(true));
             }
         }
-        public Rates[] GetObservation()
+        public RollingWindow GetRatesObservation(bool moveForward = false)
         {
-            var observation = new List<Rates>();
+            _ = RollingRates.Append(_rates[moveForward ? _index++ : _index].ToFloatArray());
 
-            for (int i = _index - (_observationLength - 1); i <= _index; i++)
-            {
-                observation.Add(_rates[i]);
-            }
-
-            return observation.ToArray();
+            return RollingRates;
         }
-        public RollingWindow GetObservation(bool moveForward = false)
+        public RollingWindow GetMacdObservation(bool moveForward = false)
         {
             _ = RollingMacds.Append(_macds[moveForward ? _index++ : _index].ToFloatArray());
 

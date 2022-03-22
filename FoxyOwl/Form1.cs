@@ -61,7 +61,7 @@ namespace FoxyOwl
             {
                 _ = MLTrader.Instance.Step(-1);
 
-                LoadChart(MLTrader.Instance.GetObservation());
+                LoadChart(MLTrader.Instance.GetMacdObservation().ToRatesArray());
             }
             else
             {
@@ -78,7 +78,7 @@ namespace FoxyOwl
             {
                 _ = MLTrader.Instance.Step();
 
-                LoadChart(MLTrader.Instance.GetObservation());
+                LoadChart(MLTrader.Instance.GetMacdObservation().ToRatesArray());
             }
             else
             {
@@ -219,7 +219,7 @@ namespace FoxyOwl
             try
             {
                 MLTrader.Print += MLTrader_Print;
-                _rates = MLTrader.Instance.GetObservation();
+                _rates = MLTrader.Instance.GetRatesObservation().ToRatesArray();
 
                 //_timer = new Timer();
 

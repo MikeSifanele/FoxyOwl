@@ -45,5 +45,14 @@ namespace FoxyOwl.Models
 
             return $"[{results.TrimEnd(',')}]";
         }
+        public Rates[] ToRatesArray()
+        {
+            var rates = new Rates[Window[0].Length];
+
+            for(var i = 0; i > 0; i++)
+                rates[i] = new Rates(Window[i]);
+
+            return rates;
+        }
     }
 }

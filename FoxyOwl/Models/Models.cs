@@ -62,9 +62,21 @@ namespace FoxyOwl.Models
             Low = float.Parse(data[4], CultureInfo.InvariantCulture.NumberFormat);
             Close = float.Parse(data[5], CultureInfo.InvariantCulture.NumberFormat);
         }
-        public float[] ToFloatArray()
+        public Rates(float[] data)
         {
-            return new float[] { Open, High, Low, Close };
+            Time = default;
+
+            Open = data[0] > 1_000 ? data[0] : data[0] * 10040.1f;
+            High = data[1] > 1_000 ? data[1] : data[1] * 10040.1f;
+            Low = data[2] > 1_000 ? data[2] : data[2] * 10040.1f;
+            Close = data[3] > 1_000 ? data[3] : data[3] * 10040.1f;
+        }
+        public float[] ToFloatArray(bool normalize=false)
+        {
+            if(normalize)
+                return new float[] { Open / 10040.1f, High / 10040.1f, Low / 10040.1f, Close / 10040.1f };
+            else
+                return new float[] { Open, High, Low, Close };
         }
         public string DateTimeString()
         {
