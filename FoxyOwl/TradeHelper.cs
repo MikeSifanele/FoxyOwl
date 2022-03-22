@@ -124,7 +124,7 @@ namespace FoxyOwl
                 _rates = rates.ToArray();
                 _macds = ObservationConvert.ToMacds(rates.ToArray());
 
-                SetIndex(startIndex);
+                SetIndex(Math.Max(startIndex, _observationLength-1));
                 WarmUpRollingWindows();
             }
 
