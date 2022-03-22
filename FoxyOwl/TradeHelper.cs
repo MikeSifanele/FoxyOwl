@@ -71,11 +71,12 @@ namespace FoxyOwl
     public class MLTrader
     {
         #region Private fields
-        private Rates[] _rates;
-        private Macds[] _macds;
+        private List<Rates[]> _rates;
+        private List<Macds[]> _macds;
         private readonly int _observationLength = 180;
         private int _startIndex = 179;
         private int _index;
+        private int _row;
         private int _epoch = 0;
         private float _accumulativeReward = 0;
         private float _maximumReward = 0;
@@ -87,14 +88,14 @@ namespace FoxyOwl
         public int CurrentIndex => _index - _startIndex;
         public bool CanGoBack => _index > _startIndex;
         public bool IsLastStep => _index == MaximumRates;
-        public int MaximumRates => _rates.Length - 5;
+        public int MaximumRates => _rates[_row].Length - 2;
         public int Points => 100;
         public float MaximumReward => _maximumReward;
         public float AccumulativeReward => _accumulativeReward;
-        public Rates PreviousRates => _rates[_index - 1];
-        public Rates CurrentRates => _rates[_index];
+        public Rates PreviousRates => _rates[_row][_index - 1];
+        public Rates CurrentRates => _rates[_row][_index];
         public int CurrentMacdColour => Macd.CalculateCandleColour(_macds[_index - 1].Close, _macds[_index].Close);
-        public Rates FutureRates => _rates[_index + 1];
+        public Rates FutureRates => _rates[_row][_index + 1];
         public RollingWindow RollingMacds;
         public List<Position> OpenPositions => _openPositions;
         public List<Position> ClosedPositions => _closedPositions;
@@ -116,13 +117,17 @@ namespace FoxyOwl
                 while (!streamReader.EndOfStream)
                 {
                     if (rates.Count > 2 && rates[rates.Count - 2].Time.AddMinutes(1) != rates[rates.Count - 1].Time)
-                        break;
+                    {
+                        if(rates.Count - _observationLength > 200)
+                        {
+                            _rates.Add(rates.ToArray());
+                            _macds.Add(ObservationConvert.ToMacds(_rates[_rates.Count - 1]));
+                        }
+                    }
 
                     rates.Add(new Rates(streamReader.ReadLine().Split('\t')));
                 }
-
-                _rates = rates.ToArray();
-                _macds = ObservationConvert.ToMacds(rates.ToArray());
+                
 
                 SetIndex(Math.Max(startIndex, _observationLength-1));
                 WarmUpRollingWindows();
@@ -136,7 +141,7 @@ namespace FoxyOwl
 
             for (int i = 0; i <= RollingMacds.Length; i++)
             {
-                _ = RollingMacds.Append(_macds[i].ToFloatArray());
+                _ = RollingMacds.Append(_macds[_row][i].ToFloatArray());
             }
         }
         public Rates[] GetObservation()
@@ -145,14 +150,17 @@ namespace FoxyOwl
 
             for (int i = _index - (_observationLength - 1); i <= _index; i++)
             {
-                observation.Add(_rates[i]);
+                observation.Add(_rates[_row][i]);
             }
 
             return observation.ToArray();
         }
         public RollingWindow GetObservation(bool moveForward = false)
         {
-            _ = RollingMacds.Append(_macds[moveForward ? _index++ : _index].ToFloatArray());
+            if(moveForward)
+                _ = RollingMacds.Append(_macds[_row][_index++].ToFloatArray());
+            else
+                _ = RollingMacds.Append(_macds[_row][_index].ToFloatArray());
 
             return RollingMacds;
         }
@@ -166,12 +174,12 @@ namespace FoxyOwl
             {
                 var position = new Position()
                 {
-                    PositionTime = new PositionTime(_rates[_index].Time),
+                    PositionTime = new PositionTime(_rates[_row][_index].Time),
                     MarketOrder = marketOrder,
-                    PriceOpen = _rates[_index].Open,
+                    PriceOpen = _rates[_row][_index].Open,
                     StopLoss = stopLoss,
-                    PriceLow = _rates[_index].Low,
-                    PriceHigh = _rates[_index].High,
+                    PriceLow = _rates[_row][_index].Low,
+                    PriceHigh = _rates[_row][_index].High,
                 };
 
                 _openPositions.Add(position);
@@ -189,10 +197,10 @@ namespace FoxyOwl
             {
                 for (int i = 0; i < _openPositions.Count; i++)
                 {
-                    _openPositions[i].Profit = GetPoints(_openPositions[i].MarketOrder, _openPositions[i].PriceOpen, _rates[_index].Close);
+                    _openPositions[i].Profit = GetPoints(_openPositions[i].MarketOrder, _openPositions[i].PriceOpen, _rates[_row][_index].Close);
 
-                    _openPositions[i].PriceHigh = Math.Max(_rates[_index].High, _openPositions[i].PriceHigh);
-                    _openPositions[i].PriceLow = Math.Min(_rates[_index].Low, _openPositions[i].PriceLow);
+                    _openPositions[i].PriceHigh = Math.Max(_rates[_row][_index].High, _openPositions[i].PriceHigh);
+                    _openPositions[i].PriceLow = Math.Min(_rates[_row][_index].Low, _openPositions[i].PriceLow);
 
                     if (_openPositions[i].StopLoss.HasValue)
                         if (_openPositions[i].Profit < -_openPositions[i].StopLoss)
@@ -210,8 +218,8 @@ namespace FoxyOwl
             {
                 var position = _openPositions[index];
 
-                position.PriceClose = _rates[_index].Close;
-                position.PositionTime.Close = Convert.ToDateTime(_rates[_index].Time);
+                position.PriceClose = _rates[_row][_index].Close;
+                position.PositionTime.Close = Convert.ToDateTime(_rates[_row][_index].Time);
 
                 AddReward(position.Profit);
 
@@ -258,8 +266,8 @@ namespace FoxyOwl
         }
         public int GetPoints(MarketOrderEnum action, float? openPrice = null, float? closePrice = null)
         {
-            openPrice = openPrice ?? _rates[_index].Open;
-            closePrice = closePrice ?? _rates[_index].Close;
+            openPrice = openPrice ?? _rates[_row][_index].Open;
+            closePrice = closePrice ?? _rates[_row][_index].Close;
 
             int points = 0;
 
@@ -326,19 +334,19 @@ namespace FoxyOwl
         {
             try
             {
-                float[] highLow = new float[] { _rates[_index].High, _rates[_index].Low };
+                float[] highLow = new float[] { _rates[_row][_index].High, _rates[_row][_index].Low };
 
                 int i = 1;
                 while (!IsLastStep)
                 {
-                    if (highLow[0] < _rates[_index + i].Close)
+                    if (highLow[0] < _rates[_row][_index + i].Close)
                     {
-                        highLow[0] = _rates[_index + i].Close;
+                        highLow[0] = _rates[_row][_index + i].Close;
                     }
 
-                    if (highLow[1] > _rates[_index + i].Close)
+                    if (highLow[1] > _rates[_row][_index + i].Close)
                     {
-                        highLow[1] = _rates[_index + i].Close;
+                        highLow[1] = _rates[_row][_index + i].Close;
                     }
 
                     i++;
