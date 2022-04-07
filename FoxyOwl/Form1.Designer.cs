@@ -33,20 +33,24 @@ namespace FoxyOwl
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnPositionsCloseAll = new System.Windows.Forms.Button();
             this.btnSell = new System.Windows.Forms.Button();
             this.btnBuy = new System.Windows.Forms.Button();
             this.btnForward = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
-            this.btnPositionsCloseAll = new System.Windows.Forms.Button();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbCloseOppositeTrade = new System.Windows.Forms.CheckBox();
+            this.cbAutoTrade = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.chartPanel = new System.Windows.Forms.Panel();
-            this.cbAutoTrade = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.lbOutput = new System.Windows.Forms.ListBox();
+            this.labelAccount = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            this.tableLayoutPanel6.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
@@ -75,12 +79,12 @@ namespace FoxyOwl
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.34641F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.58823F));
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel4, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cbAutoTrade, 1, 0);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel4, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel6, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 822);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -104,13 +108,28 @@ namespace FoxyOwl
             this.tableLayoutPanel4.Controls.Add(this.btnBack, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.ForeColor = System.Drawing.Color.Black;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(611, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(612, 0);
             this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(919, 54);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(918, 54);
             this.tableLayoutPanel4.TabIndex = 0;
+            // 
+            // btnPositionsCloseAll
+            // 
+            this.btnPositionsCloseAll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPositionsCloseAll.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPositionsCloseAll.Location = new System.Drawing.Point(736, 4);
+            this.btnPositionsCloseAll.Margin = new System.Windows.Forms.Padding(4);
+            this.btnPositionsCloseAll.Name = "btnPositionsCloseAll";
+            this.btnPositionsCloseAll.Size = new System.Drawing.Size(178, 46);
+            this.btnPositionsCloseAll.TabIndex = 3;
+            this.btnPositionsCloseAll.Text = "Close positions";
+            this.btnPositionsCloseAll.UseVisualStyleBackColor = true;
+            this.btnPositionsCloseAll.Click += new System.EventHandler(this.btnPositionsCloseAll_Click);
             // 
             // btnSell
             // 
@@ -147,6 +166,7 @@ namespace FoxyOwl
             this.btnForward.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnForward.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnForward.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnForward.Location = new System.Drawing.Point(187, 4);
             this.btnForward.Margin = new System.Windows.Forms.Padding(4);
@@ -172,20 +192,58 @@ namespace FoxyOwl
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
-            // btnPositionsCloseAll
+            // tableLayoutPanel6
             // 
-            this.btnPositionsCloseAll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tableLayoutPanel6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPositionsCloseAll.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPositionsCloseAll.Location = new System.Drawing.Point(736, 4);
-            this.btnPositionsCloseAll.Margin = new System.Windows.Forms.Padding(4);
-            this.btnPositionsCloseAll.Name = "btnPositionsCloseAll";
-            this.btnPositionsCloseAll.Size = new System.Drawing.Size(179, 46);
-            this.btnPositionsCloseAll.TabIndex = 3;
-            this.btnPositionsCloseAll.Text = "Close positions";
-            this.btnPositionsCloseAll.UseVisualStyleBackColor = true;
-            this.btnPositionsCloseAll.Click += new System.EventHandler(this.btnPositionsCloseAll_Click);
+            this.tableLayoutPanel6.ColumnCount = 2;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel6.Controls.Add(this.cbCloseOppositeTrade, 1, 0);
+            this.tableLayoutPanel6.Controls.Add(this.cbAutoTrade, 0, 0);
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 1;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(606, 48);
+            this.tableLayoutPanel6.TabIndex = 1;
+            // 
+            // cbCloseOppositeTrade
+            // 
+            this.cbCloseOppositeTrade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbCloseOppositeTrade.AutoSize = true;
+            this.cbCloseOppositeTrade.BackColor = System.Drawing.Color.White;
+            this.cbCloseOppositeTrade.Checked = true;
+            this.cbCloseOppositeTrade.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbCloseOppositeTrade.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbCloseOppositeTrade.Location = new System.Drawing.Point(309, 6);
+            this.cbCloseOppositeTrade.Margin = new System.Windows.Forms.Padding(6);
+            this.cbCloseOppositeTrade.Name = "cbCloseOppositeTrade";
+            this.cbCloseOppositeTrade.Size = new System.Drawing.Size(210, 36);
+            this.cbCloseOppositeTrade.TabIndex = 6;
+            this.cbCloseOppositeTrade.Text = "Close opposite trade";
+            this.cbCloseOppositeTrade.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbCloseOppositeTrade.UseVisualStyleBackColor = false;
+            // 
+            // cbAutoTrade
+            // 
+            this.cbAutoTrade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbAutoTrade.AutoSize = true;
+            this.cbAutoTrade.BackColor = System.Drawing.Color.White;
+            this.cbAutoTrade.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbAutoTrade.Location = new System.Drawing.Point(6, 6);
+            this.cbAutoTrade.Margin = new System.Windows.Forms.Padding(6);
+            this.cbAutoTrade.Name = "cbAutoTrade";
+            this.cbAutoTrade.Size = new System.Drawing.Size(130, 36);
+            this.cbAutoTrade.TabIndex = 5;
+            this.cbAutoTrade.Text = "Auto trade";
+            this.cbAutoTrade.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbAutoTrade.UseVisualStyleBackColor = false;
+            this.cbAutoTrade.CheckedChanged += new System.EventHandler(this.cbAutoTrade_CheckedChanged);
             // 
             // tableLayoutPanel3
             // 
@@ -195,6 +253,7 @@ namespace FoxyOwl
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel3.Controls.Add(this.lblTitle, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.labelAccount, 2, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -202,15 +261,16 @@ namespace FoxyOwl
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(1530, 41);
             this.tableLayoutPanel3.TabIndex = 1;
+            this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
             // lblTitle
             // 
             this.lblTitle.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe Print", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.Location = new System.Drawing.Point(513, 0);
+            this.lblTitle.Location = new System.Drawing.Point(665, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(504, 52);
+            this.lblTitle.Size = new System.Drawing.Size(200, 41);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Trash Panda";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -224,23 +284,8 @@ namespace FoxyOwl
             this.chartPanel.Padding = new System.Windows.Forms.Padding(3);
             this.chartPanel.Size = new System.Drawing.Size(1530, 766);
             this.chartPanel.TabIndex = 2;
+            this.chartPanel.ClientSizeChanged += new System.EventHandler(this.chartPanel_ClientSizeChanged);
             this.chartPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
-            // 
-            // cbAutoTrade
-            // 
-            this.cbAutoTrade.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbAutoTrade.AutoSize = true;
-            this.cbAutoTrade.Font = new System.Drawing.Font("Segoe Print", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbAutoTrade.Location = new System.Drawing.Point(452, 3);
-            this.cbAutoTrade.Name = "cbAutoTrade";
-            this.cbAutoTrade.Size = new System.Drawing.Size(156, 48);
-            this.cbAutoTrade.TabIndex = 4;
-            this.cbAutoTrade.Text = "Auto trade";
-            this.cbAutoTrade.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.cbAutoTrade.UseVisualStyleBackColor = true;
-            this.cbAutoTrade.CheckedChanged += new System.EventHandler(this.cbAutoTrade_CheckedChanged);
             // 
             // tableLayoutPanel5
             // 
@@ -277,6 +322,17 @@ namespace FoxyOwl
             this.lbOutput.TabIndex = 0;
             this.lbOutput.TabStop = false;
             // 
+            // labelAccount
+            // 
+            this.labelAccount.AutoSize = true;
+            this.labelAccount.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.labelAccount.Font = new System.Drawing.Font("Segoe Script", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAccount.Location = new System.Drawing.Point(1023, 14);
+            this.labelAccount.Name = "labelAccount";
+            this.labelAccount.Size = new System.Drawing.Size(504, 27);
+            this.labelAccount.TabIndex = 1;
+            this.labelAccount.Text = "Balance: ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -287,12 +343,13 @@ namespace FoxyOwl
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Trash Panda Home";
+            this.Text = "Trash Panda";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel6.ResumeLayout(false);
+            this.tableLayoutPanel6.PerformLayout();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel5.ResumeLayout(false);
@@ -303,19 +360,22 @@ namespace FoxyOwl
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Panel chartPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+        private System.Windows.Forms.ListBox lbOutput;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.Button btnPositionsCloseAll;
         private System.Windows.Forms.Button btnSell;
         private System.Windows.Forms.Button btnBuy;
         private System.Windows.Forms.Button btnForward;
         private System.Windows.Forms.Button btnBack;
-        private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Panel chartPanel;
-        private System.Windows.Forms.Button btnPositionsCloseAll;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
+        private System.Windows.Forms.CheckBox cbCloseOppositeTrade;
         private System.Windows.Forms.CheckBox cbAutoTrade;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.ListBox lbOutput;
+        private System.Windows.Forms.Label labelAccount;
     }
 }
 

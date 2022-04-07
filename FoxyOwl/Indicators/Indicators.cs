@@ -14,6 +14,9 @@ namespace FoxyOwl.Indicators
         {
             try
             {
+                if(previousEma == 0)
+                    return close;
+
                 float alpha = (float)(2.0 / (1.0 + period));
 
                 return previousEma + alpha * (close - previousEma);
@@ -53,11 +56,11 @@ namespace FoxyOwl.Indicators
                         return (int)MacdColour.Firebrick;
                 }
 
-                return (int)MacdColour.Neutral;
+                return (int)MacdColour.DimGray;
             }
             catch (Exception)
             {
-                return (int)MacdColour.Neutral;
+                return (int)MacdColour.DimGray;
             }
         }
     }

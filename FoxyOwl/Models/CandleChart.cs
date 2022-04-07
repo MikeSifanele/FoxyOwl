@@ -7,5 +7,8 @@ using System.Threading.Tasks;
 
 namespace FoxyOwl.Models
 {
-
+    public static class CandleChart
+    {
+        
+    }
 }
