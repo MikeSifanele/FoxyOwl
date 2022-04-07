@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -32,9 +32,10 @@ namespace FoxyOwl
                 //dynamic tensorflow = Py.Import("tensorflow");
                 //dynamic model = tensorflow?.keras?.models?.load_model(@"C:\python-repos\step-model-2");
 
-                _mlTrader = new MLTrader();
+                var resolution = 10;
+                _mlTrader = new MLTrader(resolution);
 
-                using (var myWriter = new StreamWriter(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step super data.DAT"))
+                using (var myWriter = new StreamWriter($@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\step macds m{resolution} p7.DAT"))
                 {
                     StringBuilder states = new StringBuilder();
                     StringBuilder labels = new StringBuilder();
@@ -73,8 +74,8 @@ namespace FoxyOwl
         #region Private fields
         private Rates[] _rates;
         private Macds[] _macds;
-        private readonly int _observationLength = 180;
-        private int _startIndex = 179;
+        private readonly int _observationLength = 20;
+        private int _startIndex = 100;
         private int _index;
         private int _epoch = 0;
         private float _accumulativeReward = 0;
@@ -106,9 +107,9 @@ namespace FoxyOwl
         #endregion
         private static MLTrader _instance;
         public static MLTrader Instance => _instance ?? (_instance = new MLTrader());
-        public MLTrader(int startIndex = 182)
+        public MLTrader(int resolution = 1, int startIndex = 182)
         {
-            using (var streamReader = new StreamReader(@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\Step Index M1.csv"))
+            using (var streamReader = new StreamReader($@"C:\Users\MikeSifanele\OneDrive - Optimi\Documents\Data\Step Index M1.csv"))
             {
                 var rates = new List<Rates>();
 
@@ -118,14 +119,16 @@ namespace FoxyOwl
                 {
                     if (rates.Count > 2 && rates[rates.Count - 2].Time.AddMinutes(1) != rates[rates.Count - 1].Time)
                     {
-                        rates = new List<Rates>();
-                        break;
+                        if(rates.Count > 80_000)
+                            break;
+                        else
+                            rates = new List<Rates>();
                     }
 
                     rates.Add(new Rates(streamReader.ReadLine().Split('\t')));
                 }
 
-                _rates = rates.ToArray();
+                _rates = resolution == 1 ? rates.ToArray() : CandleConvert.ToResolution(rates.ToArray(), (Resolution)resolution);
                 _macds = ObservationConvert.ToMacds(rates.ToArray());
 
                 SetIndex(Math.Max(startIndex, _observationLength-1));
@@ -142,12 +145,12 @@ namespace FoxyOwl
             for (int i = 0; i <= RollingMacds.Length; i++)
             {
                 _ = RollingMacds.Append(_macds[i].ToFloatArray());
-                _ = RollingRates.Append(_rates[i].ToFloatArray(true));
+                _ = RollingRates.Append(_rates[i].ToFloatArray(normalize: true));
             }
         }
         public RollingWindow GetRatesObservation(bool moveForward = false)
         {
-            _ = RollingRates.Append(_rates[moveForward ? _index++ : _index].ToFloatArray());
+            _ = RollingRates.Append(_rates[moveForward ? _index++ : _index].ToFloatArray(normalize: true));
 
             return RollingRates;
         }
